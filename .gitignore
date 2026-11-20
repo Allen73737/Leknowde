@@ -1,0 +1,38 @@
+# Dependencies
+node_modules/
+frontend/.next/
+frontend/out/
+frontend/tsconfig.tsbuildinfo
+
+# Python
+ai-services/.venv/
+ai-services/.env
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Environment and secrets
+.env
+.env.local
+.env.*.local
+
+# Local data
+backend/data/
+*.db
+*.db-shm
+*.db-wal
+
+# Build output
+backend/bin/
+backend/leknowde-api
+dist/
+build/
+
+# Editor / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log

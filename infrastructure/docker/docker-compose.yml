@@ -1,0 +1,161 @@
+# LeKnowde — full stack
+#
+#   docker compose --env-file ../../.env up --build
+#
+# Required in ../../.env before first start:
+#   JWT_SECRET, ENCRYPTION_KEY, POSTGRES_PASSWORD (only if you override below)
+#
+# The core services (db, api, ai, web) are the stack the application actually
+# uses. The `extensions` and `observability` profiles contain adapters that are
+# NOT wired into the current code — see documentation/deployment.md.
+
+name: leknowde
+
+services:
+  db:
+    image: pgvector/pgvector:pg16
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: leknowde
+      POSTGRES_USER: leknowde
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-leknowde}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U leknowde -d leknowde"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    ports:
+      - "5432:5432"
+
+  api:
+    build:
+      context: ../..
+      dockerfile: infrastructure/docker/api.Dockerfile
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+      ai:
+        condition: service_started
+    environment:
+      LEKNOWDE_ENV: ${LEKNOWDE_ENV:-production}
+      PORT: "8080"
+      DATABASE_URL: postgres://leknowde:${POSTGRES_PASSWORD:-leknowde}@db:5432/leknowde?sslmode=disable
+      JWT_SECRET: ${JWT_SECRET:?JWT_SECRET is required}
+      ENCRYPTION_KEY: ${ENCRYPTION_KEY:?ENCRYPTION_KEY is required (openssl rand -hex 32)}
+      ALLOWED_ORIGINS: ${ALLOWED_ORIGINS:-http://localhost:3000}
+      FRONTEND_URL: ${FRONTEND_URL:-http://localhost:3000}
+      PUBLIC_API_URL: ${PUBLIC_API_URL:-http://localhost:8080}
+      AI_SERVICE_URL: http://ai:8000
+      AI_INTERNAL_TOKEN: ${AI_INTERNAL_TOKEN:-dev-internal-token}
+      GITHUB_CLIENT_ID: ${GITHUB_CLIENT_ID:-}
+      GITHUB_CLIENT_SECRET: ${GITHUB_CLIENT_SECRET:-}
+      GITHUB_REDIRECT_URL: ${GITHUB_REDIRECT_URL:-http://localhost:8080/api/v1/integrations/github/callback}
+      RATE_LIMIT_PER_MINUTE: ${RATE_LIMIT_PER_MINUTE:-240}
+      INDEX_WORKER_COUNT: ${INDEX_WORKER_COUNT:-2}
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+    ports:
+      - "8080:8080"
+
+  ai:
+    build:
+      context: ../..
+      dockerfile: infrastructure/docker/ai.Dockerfile
+    restart: unless-stopped
+    environment:
+      SERVICE_NAME: leknowde-intelligence
+      ENVIRONMENT: ${LEKNOWDE_ENV:-production}
+      INTERNAL_TOKEN: ${AI_INTERNAL_TOKEN:-dev-internal-token}
+      ALLOWED_ORIGINS: ${ALLOWED_ORIGINS:-http://localhost:3000}
+      LITELLM_BASE_URL: ${LITELLM_BASE_URL:-}
+      LITELLM_API_KEY: ${LITELLM_API_KEY:-}
+      LITELLM_MODEL: ${LITELLM_MODEL:-}
+      GROQ_API_KEY: ${GROQ_API_KEY:-}
+      GROQ_MODEL: ${GROQ_MODEL:-llama-3.3-70b-versatile}
+      GEMINI_API_KEY: ${GEMINI_API_KEY:-}
+      GEMINI_MODEL: ${GEMINI_MODEL:-gemini-2.0-flash}
+      LLM_PROVIDER_ORDER: ${LLM_PROVIDER_ORDER:-litellm,groq,gemini}
+      EMBEDDING_PROVIDER: ${EMBEDDING_PROVIDER:-lexical}
+      EMBEDDING_MODEL: ${EMBEDDING_MODEL:-lexical-hash-v1}
+      EMBEDDING_DIM: ${EMBEDDING_DIM:-256}
+    ports:
+      - "8000:8000"
+
+  web:
+    build:
+      context: ../..
+      dockerfile: infrastructure/docker/frontend.Dockerfile
+      args:
+        NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL:-http://localhost:3000}
+    restart: unless-stopped
+    depends_on:
+      - api
+    environment:
+      LEKNOWDE_API_URL: http://api:8080
+      NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL:-http://localhost:3000}
+    ports:
+      - "3000:3000"
+
+  # -------------------------------------------------------------------------
+  # Optional adapters. The application does not consume these yet; they are
+  # provided so the deployment layout matches the target architecture.
+  # Enable with: docker compose --profile extensions up
+  # -------------------------------------------------------------------------
+  neo4j:
+    profiles: ["extensions"]
+    image: neo4j:5-community
+    restart: unless-stopped
+    environment:
+      NEO4J_AUTH: neo4j/${NEO4J_PASSWORD:-leknowde-dev}
+      NEO4J_server_memory_heap_max__size: 512M
+    volumes:
+      - neo4jdata:/data
+    ports:
+      - "7474:7474"
+      - "7687:7687"
+
+  redis:
+    profiles: ["extensions"]
+    image: redis:7-alpine
+    restart: unless-stopped
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes:
+      - redisdata:/data
+    ports:
+      - "6379:6379"
+
+  # -------------------------------------------------------------------------
+  # Optional observability. The collector accepts OTLP and prints to its own
+  # log; Grafana is provisioned with a Prometheus datasource placeholder only.
+  # Enable with: docker compose --profile observability up
+  # -------------------------------------------------------------------------
+  otel-collector:
+    profiles: ["observability"]
+    image: otel/opentelemetry-collector-contrib:0.115.1
+    restart: unless-stopped
+    command: ["--config=/etc/otelcol/config.yaml"]
+    volumes:
+      - ./otel-collector.yaml:/etc/otelcol/config.yaml:ro
+    ports:
+      - "4317:4317"
+      - "4318:4318"
+
+  grafana:
+    profiles: ["observability"]
+    image: grafana/grafana:11.4.0
+    restart: unless-stopped
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_PASSWORD:-admin}
+      GF_USERS_ALLOW_SIGN_UP: "false"
+    volumes:
+      - grafanadata:/var/lib/grafana
+    ports:
+      - "3001:3000"
+
+volumes:
+  pgdata:
+  neo4jdata:
+  redisdata:
+  grafanadata:
