@@ -301,7 +301,7 @@ func (s *Store) UpsertDocument(ctx context.Context, doc models.Document) (models
 }
 
 func (s *Store) ListDocuments(ctx context.Context, repoID string) ([]models.Document, error) {
-	rows, err := s.DB.QueryContext(ctx, `SELECT id, repository_id, kind, title, path, status, drift, source_fingerprint, updated_at, created_at
+	rows, err := s.DB.QueryContext(ctx, `SELECT id, repository_id, kind, title, path, content, status, drift, source_fingerprint, updated_at, created_at
 		FROM generated_documents WHERE repository_id = ? ORDER BY kind ASC`, repoID)
 	if err != nil {
 		return nil, err
@@ -310,7 +310,7 @@ func (s *Store) ListDocuments(ctx context.Context, repoID string) ([]models.Docu
 	out := []models.Document{}
 	for rows.Next() {
 		var d models.Document
-		if err := rows.Scan(&d.ID, &d.RepositoryID, &d.Kind, &d.Title, &d.Path, &d.Status, &d.Drift, &d.SourceFingerprint, &d.UpdatedAt, &d.CreatedAt); err != nil {
+		if err := rows.Scan(&d.ID, &d.RepositoryID, &d.Kind, &d.Title, &d.Path, &d.Content, &d.Status, &d.Drift, &d.SourceFingerprint, &d.UpdatedAt, &d.CreatedAt); err != nil {
 			return nil, err
 		}
 		out = append(out, d)

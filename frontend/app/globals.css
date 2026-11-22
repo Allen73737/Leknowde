@@ -181,7 +181,7 @@ body {
     @apply rounded-card border border-line bg-shell;
   }
   .eyebrow {
-    @apply font-mono text-[0.75rem] font-semibold uppercase tracking-[0.2em] text-faint;
+    @apply text-[0.75rem] font-semibold uppercase tracking-[0.12em] text-faint;
   }
   .hairline {
     @apply border-t border-line;
@@ -293,7 +293,7 @@ body {
     @apply w-full border-collapse text-left;
   }
   .data-table thead th {
-    @apply border-b border-line bg-shell px-4 py-3.5 font-mono text-[0.75rem] font-medium uppercase tracking-[0.14em] text-faint;
+    @apply border-b border-line bg-shell px-4 py-3.5 text-[0.75rem] font-medium tracking-[0.01em] text-faint;
     position: sticky;
     top: 0;
     z-index: 1;
@@ -372,7 +372,7 @@ body {
   padding-left: 0.2rem;
 }
 .prose-mineral code {
-  font-family: var(--font-jetbrains), monospace;
+  font-family: var(--font-plex-mono), "IBM Plex Mono", monospace;
   font-size: 0.84em;
   background: var(--raised);
   color: var(--ink);

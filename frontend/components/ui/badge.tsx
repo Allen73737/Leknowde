@@ -17,7 +17,7 @@ export function Badge({
   children,
   tone = "neutral",
   className,
-  mono = true,
+  mono = false,
 }: {
   children: ReactNode;
   tone?: Tone;
@@ -28,7 +28,7 @@ export function Badge({
     <span
       className={cn(
         "inline-flex items-center gap-1.5 rounded-md border px-2 py-1 text-[0.75rem] leading-none tracking-[0.01em]",
-        mono ? "font-mono" : "font-sans",
+        mono ? "font-mono" : "font-medium",
         tones[tone],
         className,
       )}

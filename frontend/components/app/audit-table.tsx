@@ -102,7 +102,7 @@ export function AuditTable({ logs }: { logs: AuditLog[] }) {
                   {["Action", "Actor", "Target", "IP", "When"].map((heading) => (
                     <th
                       key={heading}
-                      className="px-4 py-3 font-mono text-[0.75rem] font-semibold uppercase tracking-[0.12em] text-faint"
+                      className="px-4 py-3 text-[0.75rem] font-medium text-faint"
                     >
                       {heading}
                     </th>

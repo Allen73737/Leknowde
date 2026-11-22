@@ -159,7 +159,7 @@ function SidebarBody({
         <Link
           href="/app"
           aria-label="LeKnowde dashboard"
-          className="focus-ring rounded-lg transition-transform duration-200 hover:scale-[1.02]"
+          className="focus-ring rounded-lg"
         >
           <Logo size={26} />
         </Link>
@@ -223,7 +223,7 @@ function SidebarBody({
 
         <div className="mt-6">
           <div className="flex items-center justify-between px-3">
-            <p className="font-mono text-[0.75rem] font-semibold uppercase tracking-[0.16em] text-faint">
+            <p className="text-[0.75rem] font-medium text-faint">
               Workspaces
             </p>
             <Link
@@ -265,7 +265,7 @@ function SidebarBody({
         </div>
 
         <div className="mt-6">
-          <p className="px-3 font-mono text-[0.75rem] font-semibold uppercase tracking-[0.16em] text-faint">
+          <p className="px-3 text-[0.75rem] font-medium text-faint">
             Account
           </p>
           <div className="mt-1.5 space-y-0.5">

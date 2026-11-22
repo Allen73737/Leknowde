@@ -28,6 +28,7 @@ function Invoke-Api {
 
 function Get-R([string]$Path, [string]$Token) { Invoke-Api -Method Get -Path $Path -Token $Token }
 function Post([string]$Path, $Body, [string]$Token) { Invoke-Api -Method Post -Path $Path -Body $Body -Token $Token }
+function Put([string]$Path, $Body, [string]$Token) { Invoke-Api -Method Put -Path $Path -Body $Body -Token $Token }
 function Delete-R([string]$Path, [string]$Token) { Invoke-Api -Method Delete -Path $Path -Token $Token }
 
 function Expect {
@@ -165,7 +166,18 @@ Expect ($doc.document.status -eq "draft") "generated document starts as a draft"
 $docList = Get-R "/repositories/$($repo.id)/documents" $token
 Expect ($docList.documents.Count -gt 0) "document list returns the stored document"
 
-Write-Host "17. chat"
+Write-Host "17. readme + about"
+$readme = Get-R "/repositories/$($repo.id)/readme" $token
+Write-Host "   title=$($readme.title) chars=$($readme.markdown.Length) topics=$($readme.about.topics.Count) source=$($readme.about.source)"
+Expect ($readme.markdown.Length -gt 200) "README draft has content"
+Expect ($readme.about.topics.Count -gt 0) "About draft proposes topics"
+Expect ($readme.about.topics.Count -le 20) "About topics respect GitHub's twenty-topic limit"
+$savedAbout = Put "/repositories/$($repo.id)/about" @{ description = "Smoke-tested repository"; topics = @("testing", "smoke-test") } $token
+Expect ($savedAbout.source -eq "saved") "About override is persisted"
+$generatedAbout = Get-R "/repositories/$($repo.id)/about?source=generated" $token
+Expect ($generatedAbout.source -eq "generated") "generated About stays available after a saved override"
+
+Write-Host "18. chat"
 $chat = Post "/repositories/$($repo.id)/chat" @{ question = "How does refresh token rotation work?" } $token
 Write-Host "   completed=$($chat.completed) confidence=$($chat.confidence) evidence=$($chat.evidence.Count) notice=$($chat.notice)"
 Expect ($chat.evidence.Count -gt 0) "chat returns retrieved evidence"
@@ -175,7 +187,7 @@ if ($chat.completed -eq $false) {
 $conversations = Get-R "/repositories/$($repo.id)/conversations" $token
 Expect ($conversations.conversations.Count -gt 0) "chat created a conversation record"
 
-Write-Host "18. pull requests"
+Write-Host "19. pull requests"
 $prs = Get-R "/repositories/$($repo.id)/pull-requests" $token
 Write-Host "   prs=$($prs.pull_requests.Count) demo=$($prs.demo) provider=$($prs.provider)"
 Expect ($prs.pull_requests.Count -gt 0) "demo pull requests are available"
@@ -185,13 +197,13 @@ Write-Host "   pr=$prNumber files=$($prAnalysis.files.Count) affected=$($prAnaly
 Expect ($prAnalysis.risk.score -ge 0) "PR analysis returns a risk score"
 Expect ($prAnalysis.review_recommendations.Count -gt 0) "PR analysis returns review recommendations"
 
-Write-Host "19. dashboard"
+Write-Host "20. dashboard"
 $dash = Get-R "/dashboard" $token
 Write-Host "   repos=$($dash.stats.repositories) ready=$($dash.stats.ready_repositories) files=$($dash.stats.files) findings=$($dash.stats.findings)"
 Expect ($dash.stats.repositories -ge 1) "dashboard counts the repository"
 Expect ($dash.recent_repositories.Count -ge 1) "dashboard lists recent repositories"
 
-Write-Host "20. notifications + audit"
+Write-Host "21. notifications + audit"
 $notes = Get-R "/notifications" $token
 Write-Host "   notifications=$($notes.notifications.Count) unread=$($notes.unread)"
 Expect ($notes.notifications.Count -gt 0) "indexing produced a notification"
@@ -203,12 +215,12 @@ $audit = Get-R "/audit-logs?limit=50" $token
 Write-Host "   audit=$($audit.logs.Count)"
 Expect ($audit.logs.Count -gt 0) "audit log records actions"
 
-Write-Host "21. integrations"
+Write-Host "22. integrations"
 $integrations = Get-R "/integrations" $token
 Write-Host "   connected=$($integrations.integrations.Count) github_oauth=$($integrations.github_oauth_enabled)"
 Expect ($null -ne $integrations.integrations) "integrations endpoint responds"
 
-Write-Host "22. cleanup"
+Write-Host "23. cleanup"
 $deleted = Delete-R "/repositories/$($repo.id)" $token
 Expect ($deleted.status -eq "deleted") "smoke repository was deleted"
 $stillThere = $false

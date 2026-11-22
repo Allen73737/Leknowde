@@ -44,7 +44,7 @@ export function HeroVisual() {
             ["Edges", "158"],
           ].map(([label, value]) => (
             <div key={label} className="px-4 py-3.5">
-              <p className="font-mono text-[0.75rem] uppercase tracking-[0.16em] text-faint">
+              <p className="text-[0.75rem] text-faint">
                 {label}
               </p>
               <p className="tabular mt-1 font-display text-2xl font-semibold text-ink">{value}</p>
@@ -54,7 +54,7 @@ export function HeroVisual() {
 
         <div className="border-b border-line p-4 sm:p-5">
           <div className="flex items-center justify-between gap-2">
-            <span className="flex items-center gap-1.5 font-mono text-[0.75rem] uppercase tracking-[0.14em] text-faint">
+            <span className="flex items-center gap-1.5 text-[0.75rem] text-faint">
               <Activity className="h-3.5 w-3.5 text-accent" aria-hidden="true" />
               Module weight
             </span>
@@ -82,7 +82,7 @@ export function HeroVisual() {
 
         <div className="p-4 sm:p-5">
           <div className="flex items-center justify-between gap-2">
-            <span className="flex items-center gap-1.5 font-mono text-[0.75rem] uppercase tracking-[0.14em] text-faint">
+            <span className="flex items-center gap-1.5 text-[0.75rem] text-faint">
               <CheckCircle2 className="h-3.5 w-3.5 text-success" aria-hidden="true" />
               Open signals
             </span>
@@ -95,7 +95,7 @@ export function HeroVisual() {
                   <span className={`h-1.5 w-1.5 shrink-0 rounded-full bg-current ${signal.tone}`} aria-hidden="true" />
                   <span className="truncate">{signal.label}</span>
                 </span>
-                <span className="shrink-0 font-mono text-[0.75rem] uppercase tracking-[0.12em] text-faint">
+                <span className="shrink-0 text-[0.75rem] text-faint">
                   {signal.chip}
                 </span>
               </li>

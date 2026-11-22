@@ -67,8 +67,9 @@ The interface was rebuilt on a single design system rather than patched page by
 page:
 
 - **Identity** — "Mineral Signal" kept intact: Sora display / Manrope text /
-  JetBrains Mono data, stone-and-sage palette, solid layered surfaces, inset
-  highlights and elevation. No gradients, glow, glass or translucent cards.
+  IBM Plex Mono for code and identifiers, stone-and-sage palette, solid layered
+  surfaces, inset highlights and elevation. No gradients, glow, glass or
+  translucent cards.
 - **Legibility** — type scale raised to 12/14/15/17/19/22/32/40/64px with a 12px
   floor. A DOM sweep asserts no rendered text below 12px on any route.
 - **Colour tokens** — palette values moved to channel form

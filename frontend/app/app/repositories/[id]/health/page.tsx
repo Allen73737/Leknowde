@@ -78,7 +78,7 @@ export default async function HealthPage({ params }: { params: Promise<{ id: str
           />
           <SeverityChart data={severityRows} />
           <div className="border-t border-line px-4 py-4">
-            <p className="font-mono text-[0.75rem] font-semibold uppercase tracking-[0.14em] text-faint">
+            <p className="text-[0.75rem] font-medium text-faint">
               Penalty breakdown
             </p>
             {summary.penalties.length === 0 ? (
@@ -120,7 +120,7 @@ export default async function HealthPage({ params }: { params: Promise<{ id: str
               ["Comment ratio", `${Math.round(metrics.comment_ratio * 100)}%`],
             ].map(([label, value]) => (
               <div key={label}>
-                <dt className="font-mono text-[0.75rem] uppercase tracking-[0.1em] text-faint">{label}</dt>
+                <dt className="text-[0.75rem] text-faint">{label}</dt>
                 <dd className="mt-1 font-mono text-[0.9375rem] text-ink">{value}</dd>
               </div>
             ))}

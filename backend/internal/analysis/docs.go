@@ -65,32 +65,7 @@ func GenerateLocalDoc(kind string, fs FactSheet) (title, markdown string) {
 
 	switch kind {
 	case "readme":
-		title = repo.Name
-		var b strings.Builder
-		b.WriteString("# " + repo.Name + "\n\n")
-		if repo.Description != "" {
-			b.WriteString(repo.Description + "\n\n")
-		}
-		b.WriteString(header)
-		b.WriteString("## Stack\n\n")
-		for _, l := range topLanguages(fs.Languages, 8) {
-			b.WriteString("- " + l + "\n")
-		}
-		b.WriteString("\n## Structure\n\n")
-		b.WriteString("```\n")
-		for _, f := range fs.KeyFiles {
-			b.WriteString(fmt.Sprintf("%-48s %s\n", f.Path, f.Role))
-		}
-		b.WriteString("```\n\n")
-		if len(fs.Endpoints) > 0 {
-			b.WriteString("## Endpoints\n\n")
-			for _, e := range fs.Endpoints {
-				b.WriteString("- `" + e + "`\n")
-			}
-			b.WriteString("\n")
-		}
-		b.WriteString("## Getting started\n\n```bash\n# See the installation guide for environment details\nnpm install\nnpm run dev\n```\n")
-		markdown = b.String()
+		return GenerateReadme(fs, BuildAbout(fs))
 	case "overflow":
 		title = "Overview"
 		markdown = header

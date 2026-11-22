@@ -14,19 +14,32 @@ import (
 // FactSheet is the verified, source-derived input for documentation and
 // onboarding generation. Everything here is read from the index, never guessed.
 type FactSheet struct {
-	Repository  models.Repository          `json:"repository"`
-	Branch      string                     `json:"branch"`
-	Stats       store.RepoStats            `json:"stats"`
-	Modules     []string                   `json:"modules"`
-	EntryPoints []string                   `json:"entry_points"`
-	Endpoints   []string                   `json:"endpoints"`
-	Entities    []string                   `json:"entities"`
-	Tests       []string                   `json:"tests"`
-	KeyFiles    []KeyFile                  `json:"key_files"`
-	Languages   map[string]int             `json:"languages"`
-	Commits     []models.Commit            `json:"commits"`
-	Findings    []models.Finding           `json:"findings"`
-	DependencyCounts map[string]int        `json:"dependency_counts"`
+	Repository       models.Repository `json:"repository"`
+	Branch           string            `json:"branch"`
+	Stats            store.RepoStats   `json:"stats"`
+	Modules          []string          `json:"modules"`
+	EntryPoints      []string          `json:"entry_points"`
+	Endpoints        []string          `json:"endpoints"`
+	Entities         []string          `json:"entities"`
+	Tests            []string          `json:"tests"`
+	KeyFiles         []KeyFile         `json:"key_files"`
+	Languages        map[string]int    `json:"languages"`
+	Commits          []models.Commit   `json:"commits"`
+	Findings         []models.Finding  `json:"findings"`
+	DependencyCounts map[string]int    `json:"dependency_counts"`
+	Manifests        []string          `json:"manifests"`
+	TopDirs          []DirSummary      `json:"top_dirs"`
+	HasReadme        bool              `json:"has_readme"`
+	LicenseFile      string            `json:"license_file"`
+	// Paths is used for topic and README signals; it stays out of serialised
+	// responses because the file tree is already served by its own endpoint.
+	Paths []string `json:"-"`
+}
+
+// DirSummary counts indexed files per top-level directory.
+type DirSummary struct {
+	Path  string `json:"path"`
+	Files int    `json:"files"`
 }
 
 type KeyFile struct {
@@ -41,7 +54,8 @@ type KeyFile struct {
 // BuildFacts assembles a fact sheet for a repository branch.
 func BuildFacts(ctx context.Context, st *store.Store, repo models.Repository, branch string) (FactSheet, error) {
 	fs := FactSheet{Repository: repo, Branch: branch, Languages: map[string]int{}, DependencyCounts: map[string]int{},
-		Modules: []string{}, EntryPoints: []string{}, Endpoints: []string{}, Entities: []string{}, Tests: []string{}, KeyFiles: []KeyFile{}, Commits: []models.Commit{}, Findings: []models.Finding{}}
+		Modules: []string{}, EntryPoints: []string{}, Endpoints: []string{}, Entities: []string{}, Tests: []string{}, KeyFiles: []KeyFile{}, Commits: []models.Commit{}, Findings: []models.Finding{},
+		Manifests: []string{}, TopDirs: []DirSummary{}}
 
 	stats, err := st.RepoStats(ctx, repo.ID, branch)
 	if err != nil {
@@ -79,8 +93,18 @@ func BuildFacts(ctx context.Context, st *store.Store, repo models.Repository, br
 	}
 	entryNames := map[string]bool{"index.ts": true, "index.tsx": true, "main.ts": true, "server.ts": true, "app.ts": true,
 		"main.go": true, "app.py": true, "main.py": true, "__init__.py": false, "index.js": true, "layout.tsx": true, "page.tsx": true}
+	manifestNames := map[string]bool{
+		"go.mod": true, "go.sum": false, "package.json": true, "package-lock.json": false, "pnpm-lock.yaml": false,
+		"yarn.lock": false, "requirements.txt": true, "pyproject.toml": true, "poetry.lock": false,
+		"cargo.toml": true, "pom.xml": true, "build.gradle": true, "dockerfile": true, "docker-compose.yml": true,
+		"docker-compose.yaml": true, "makefile": true, "tsconfig.json": true, "turbo.json": true,
+	}
+	dirCounts := map[string]int{}
 	for _, f := range files {
 		base := path.Base(f.Path)
+		if len(fs.Paths) < 2000 {
+			fs.Paths = append(fs.Paths, f.Path)
+		}
 		if entryNames[base] || strings.HasSuffix(f.Path, "/main.go") {
 			fs.EntryPoints = append(fs.EntryPoints, f.Path)
 		}
@@ -88,7 +112,35 @@ func BuildFacts(ctx context.Context, st *store.Store, repo models.Repository, br
 		if strings.Contains(lower, "test") || strings.Contains(lower, "spec") || strings.Contains(lower, "__tests__") {
 			fs.Tests = append(fs.Tests, f.Path)
 		}
+		if manifestNames[strings.ToLower(base)] {
+			fs.Manifests = appendUnique(fs.Manifests, f.Path)
+		}
+		if lower == "readme.md" || lower == "readme" {
+			fs.HasReadme = true
+		}
+		if fs.LicenseFile == "" && (strings.HasPrefix(strings.ToLower(base), "license") || strings.HasPrefix(strings.ToLower(base), "licence")) {
+			fs.LicenseFile = f.Path
+		}
+		clean := strings.ReplaceAll(f.Path, "\\", "/")
+		if idx := strings.Index(clean, "/"); idx > 0 {
+			dirCounts[clean[:idx]]++
+		} else {
+			dirCounts["."]++
+		}
 	}
+	for dir, count := range dirCounts {
+		fs.TopDirs = append(fs.TopDirs, DirSummary{Path: dir, Files: count})
+	}
+	sort.Slice(fs.TopDirs, func(i, j int) bool {
+		if fs.TopDirs[i].Files == fs.TopDirs[j].Files {
+			return fs.TopDirs[i].Path < fs.TopDirs[j].Path
+		}
+		return fs.TopDirs[i].Files > fs.TopDirs[j].Files
+	})
+	if len(fs.TopDirs) > 10 {
+		fs.TopDirs = fs.TopDirs[:10]
+	}
+	sort.Strings(fs.Manifests)
 	sort.Strings(fs.EntryPoints)
 	sort.Strings(fs.Tests)
 
@@ -155,13 +207,13 @@ func roleOf(p string) string {
 
 // OnboardingPlan is a generated learning path grounded in real structure.
 type OnboardingPlan struct {
-	Overview      []string   `json:"overview"`
-	Architecture  []string   `json:"architecture"`
-	Steps         []PlanStep `json:"steps"`
-	KeyFiles      []KeyFile  `json:"key_files"`
-	Questions     []string   `json:"questions_to_ask_the_codebase"`
-	EstimatedHours int       `json:"estimated_hours"`
-	Facts         FactSheet  `json:"facts"`
+	Overview       []string   `json:"overview"`
+	Architecture   []string   `json:"architecture"`
+	Steps          []PlanStep `json:"steps"`
+	KeyFiles       []KeyFile  `json:"key_files"`
+	Questions      []string   `json:"questions_to_ask_the_codebase"`
+	EstimatedHours int        `json:"estimated_hours"`
+	Facts          FactSheet  `json:"facts"`
 }
 
 type PlanStep struct {
@@ -257,7 +309,7 @@ func topLanguages(langs map[string]int, n int) []string {
 		if i >= n {
 			break
 		}
-		out = append(out, fmt.Sprintf("%s (%d files)", item.k, item.v))
+		out = append(out, fmt.Sprintf("%s (%d %s)", item.k, item.v, countLabel(item.v, "file", "files")))
 	}
 	return out
 }

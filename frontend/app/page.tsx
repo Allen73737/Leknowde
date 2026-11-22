@@ -147,7 +147,7 @@ export default function LandingPage() {
             <div className="min-w-0">
               <Stagger gap={0.07}>
                 <StaggerItem>
-                  <p className="font-mono text-[0.75rem] uppercase tracking-[0.18em] text-faint">
+                  <p className="text-[0.75rem] text-faint">
                     Deterministic core · grounded AI
                   </p>
                 </StaggerItem>
@@ -205,10 +205,10 @@ export default function LandingPage() {
               >
                 <div className="flex items-center justify-between gap-3">
                   <item.icon
-                    className="h-[1.125rem] w-[1.125rem] text-accent transition-transform duration-300 ease-smooth group-hover:-translate-y-0.5"
+                    className="h-[1.125rem] w-[1.125rem] text-accent"
                     aria-hidden="true"
                   />
-                  <span className="font-mono text-[0.75rem] tracking-[0.18em] text-faint">
+                  <span className="text-[0.75rem] text-faint">
                     {String(index + 1).padStart(2, "0")}
                   </span>
                 </div>
@@ -277,10 +277,10 @@ export default function LandingPage() {
                   }`}
                 >
                   <div className="flex items-center justify-between">
-                    <span className="font-mono text-[0.75rem] tracking-[0.18em] text-faint">
+                    <span className="text-[0.75rem] text-faint">
                       {item.step}
                     </span>
-                    <span className="flex h-10 w-10 items-center justify-center rounded-lg border border-line bg-shell text-accent transition-transform duration-300 ease-smooth group-hover:-translate-y-0.5">
+                    <span className="flex h-10 w-10 items-center justify-center rounded-lg border border-line bg-shell text-accent">
                       <item.icon className="h-[1.125rem] w-[1.125rem]" aria-hidden="true" />
                     </span>
                   </div>
@@ -581,23 +581,23 @@ export default function LandingPage() {
                     ))}
                   </div>
                   <div className="mt-4 flex items-center gap-2 rounded-lg border border-line bg-shell px-3.5 py-2.5">
-                    <span className="font-mono text-[0.75rem] uppercase tracking-[0.12em] text-faint">
+                    <span className="text-[0.75rem] text-faint">
                       browser
                     </span>
                     <span className="h-px flex-1 bg-line-strong" />
-                    <span className="font-mono text-[0.75rem] uppercase tracking-[0.12em] text-muted">
+                    <span className="text-[0.75rem] text-muted">
                       BFF
                     </span>
                     <span className="h-px flex-1 bg-line-strong" />
-                    <span className="font-mono text-[0.75rem] uppercase tracking-[0.12em] text-muted">
+                    <span className="text-[0.75rem] text-muted">
                       Go
                     </span>
                     <span className="h-px flex-1 bg-line-strong" />
-                    <span className="font-mono text-[0.75rem] uppercase tracking-[0.12em] text-muted">
+                    <span className="text-[0.75rem] text-muted">
                       AI
                     </span>
                     <span className="h-px flex-1 bg-line-strong" />
-                    <span className="font-mono text-[0.75rem] uppercase tracking-[0.12em] text-faint">
+                    <span className="text-[0.75rem] text-faint">
                       data
                     </span>
                   </div>
@@ -669,7 +669,7 @@ export default function LandingPage() {
                   <StaggerItem key={item.title}>
                     <div className="card-hover group h-full rounded-card border border-line bg-surface p-5 shadow-card">
                       <item.icon
-                        className="h-[1.125rem] w-[1.125rem] text-accent transition-transform duration-300 ease-smooth group-hover:-translate-y-0.5"
+                        className="h-[1.125rem] w-[1.125rem] text-accent"
                         aria-hidden="true"
                       />
                       <p className="mt-3.5 text-[0.9375rem] font-semibold text-ink">{item.title}</p>
@@ -711,7 +711,7 @@ export default function LandingPage() {
                   <Link href="/login" className={buttonStyles("outline", "lg", "w-full")}>
                     Sign in
                   </Link>
-                  <p className="mt-2 font-mono text-[0.75rem] uppercase tracking-[0.14em] text-faint">
+                  <p className="mt-2 text-[0.75rem] text-faint">
                     No billing in this build
                   </p>
                 </div>

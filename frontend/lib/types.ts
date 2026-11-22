@@ -707,6 +707,41 @@ export interface GenerateDocumentResponse {
   drifted?: boolean;
 }
 
+export interface AboutMetadata {
+  description: string;
+  topics: string[];
+  source: string;
+  source_fingerprint: string;
+  limits: string[];
+}
+
+export interface ReadmeResponse {
+  title: string;
+  markdown: string;
+  about: AboutMetadata;
+  repository: Repository;
+  has_readme: boolean;
+  license_file: string;
+  manifests: string[];
+  saved_document_id: string;
+  source_fingerprint: string;
+  generated_by: string;
+  max_topics: number;
+  max_description: number;
+}
+
+export interface SaveReadmeResponse {
+  document: DocumentRecord;
+  about: AboutMetadata;
+  markdown: string;
+}
+
+export interface SaveAboutResponse {
+  description: string;
+  topics: string[];
+  source: string;
+}
+
 export interface ProviderRepository {
   owner: string;
   name: string;

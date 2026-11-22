@@ -62,7 +62,7 @@ export function AuthShell({
 
           <div className="mt-10 rounded-card border border-line bg-canvas p-5 shadow-card">
             <div className="flex items-center justify-between">
-              <p className="font-mono text-[0.75rem] uppercase tracking-[0.16em] text-faint">
+              <p className="text-[0.75rem] text-faint">
                 Answer contract
               </p>
               <CheckCircle2 className="h-4 w-4 text-success" aria-hidden="true" />
@@ -76,7 +76,7 @@ export function AuthShell({
           </div>
         </div>
 
-        <p className="relative font-mono text-[0.75rem] uppercase tracking-[0.18em] text-faint">
+        <p className="relative text-[0.75rem] text-faint">
           Learn the Code. Know the System.
         </p>
       </aside>

@@ -34,7 +34,7 @@ export default async function DashboardPage() {
     <div className="space-y-5">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div className="min-w-0">
-          <p className="font-mono text-[0.75rem] font-medium uppercase tracking-[0.14em] text-faint">
+          <p className="text-[0.75rem] font-medium text-faint">
             Workspace overview
           </p>
           <h1 className="mt-1.5 font-display text-[1.625rem] font-semibold leading-tight tracking-[-0.03em] text-ink sm:text-[1.75rem]">
@@ -124,19 +124,19 @@ export default async function DashboardPage() {
                 <table className="w-full min-w-[560px] border-collapse text-left">
                   <thead>
                     <tr className="border-b border-line">
-                      <th className="px-4 py-2 font-mono text-[0.6875rem] font-semibold uppercase tracking-[0.12em] text-faint">
+                      <th className="px-4 py-2 text-[0.75rem] font-medium text-faint">
                         Repository
                       </th>
-                      <th className="px-4 py-2 font-mono text-[0.6875rem] font-semibold uppercase tracking-[0.12em] text-faint">
+                      <th className="px-4 py-2 text-[0.75rem] font-medium text-faint">
                         Status
                       </th>
-                      <th className="w-20 px-4 py-2 text-right font-mono text-[0.6875rem] font-semibold uppercase tracking-[0.12em] text-faint">
+                      <th className="w-20 px-4 py-2 text-right text-[0.75rem] font-medium text-faint">
                         Files
                       </th>
-                      <th className="w-24 px-4 py-2 text-right font-mono text-[0.6875rem] font-semibold uppercase tracking-[0.12em] text-faint">
+                      <th className="w-24 px-4 py-2 text-right text-[0.75rem] font-medium text-faint">
                         Symbols
                       </th>
-                      <th className="w-28 px-4 py-2 text-right font-mono text-[0.6875rem] font-semibold uppercase tracking-[0.12em] text-faint">
+                      <th className="w-28 px-4 py-2 text-right text-[0.75rem] font-medium text-faint">
                         Updated
                       </th>
                     </tr>
@@ -214,7 +214,7 @@ export default async function DashboardPage() {
                           />
                         ) : null}
                       </div>
-                      <p className="mt-1.5 font-mono text-[0.6875rem] uppercase tracking-[0.08em] text-faint">
+                      <p className="mt-1.5 text-[0.75rem] text-faint">
                         {notification.kind.replace(/_/g, " ")} · {relativeTime(notification.created_at)}
                       </p>
                     </li>

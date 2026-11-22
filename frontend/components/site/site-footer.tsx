@@ -37,13 +37,13 @@ export function SiteFooter() {
             Learn the Code. Know the System. Evidence-backed software intelligence for repositories
             you did not write.
           </p>
-          <p className="mt-6 font-mono text-[0.75rem] uppercase leading-relaxed tracking-[0.16em] text-faint">
+          <p className="mt-6 text-[0.75rem] leading-relaxed text-faint">
             Deterministic facts · Grounded AI · No code execution
           </p>
         </div>
         {columns.map((column) => (
           <div key={column.title} className="min-w-0">
-            <h3 className="font-mono text-[0.75rem] font-semibold uppercase tracking-[0.16em] text-faint">
+            <h3 className="text-[0.75rem] font-medium text-faint">
               {column.title}
             </h3>
             <ul className="mt-5 space-y-3">
@@ -73,7 +73,7 @@ export function SiteFooter() {
           <p className="text-[0.8125rem] text-faint">
             © {new Date().getFullYear()} LeKnowde. Platform build 1.0.
           </p>
-          <p className="font-mono text-[0.75rem] uppercase tracking-[0.14em] text-faint">
+          <p className="text-[0.75rem] text-faint">
             PostgreSQL / SQLite · SQL graph traversal · Self-hostable
           </p>
         </div>

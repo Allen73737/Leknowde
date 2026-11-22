@@ -174,7 +174,7 @@ export function Assistant({
     <div className="grid gap-3 lg:grid-cols-[264px_minmax(0,1fr)]">
       <aside className="overflow-hidden rounded-card border border-line bg-surface shadow-card lg:sticky lg:top-20 lg:flex lg:max-h-[calc(100vh-7rem)] lg:flex-col lg:self-start">
         <div className="flex shrink-0 items-center justify-between border-b border-line px-3.5 py-2.5">
-          <p className="font-mono text-[0.75rem] font-semibold uppercase tracking-[0.14em] text-faint">
+          <p className="text-[0.75rem] font-medium text-faint">
             Conversations
           </p>
           <button

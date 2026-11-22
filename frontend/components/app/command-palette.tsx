@@ -323,7 +323,7 @@ export function CommandPalette({
               ) : (
                 groups.map((group) => (
                   <div key={group.group} className="mb-1">
-                    <p className="px-4 py-2 font-mono text-[0.75rem] font-semibold uppercase tracking-[0.16em] text-faint">
+                    <p className="px-4 py-2 text-[0.75rem] font-medium text-faint">
                       {group.group}
                     </p>
                     {group.entries.map((item) => {
@@ -398,7 +398,7 @@ export function PaletteHint({ onClick }: { onClick: () => void }) {
     <button
       type="button"
       onClick={onClick}
-      className="group hidden items-center gap-2.5 rounded-lg border border-line bg-surface px-3 py-2 text-[0.8125rem] text-faint transition-all duration-200 hover:-translate-y-0.5 hover:border-line-strong hover:text-muted hover:shadow-card lg:flex"
+      className="group hidden items-center gap-2.5 rounded-lg border border-line bg-surface px-3 py-2 text-[0.8125rem] text-faint transition-colors duration-150 hover:border-line-strong hover:text-muted lg:flex"
     >
       <Search className="h-4 w-4" aria-hidden="true" />
       <span className="max-w-[9rem] truncate">Search</span>

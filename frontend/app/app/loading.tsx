@@ -10,7 +10,7 @@ export default function AppLoading() {
     <div className="space-y-7" role="status" aria-live="polite">
       <div className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
         <div className="min-w-0">
-          <div className="flex items-center gap-2 font-mono text-[0.75rem] uppercase tracking-[0.16em] text-faint">
+          <div className="flex items-center gap-2 text-[0.75rem] text-faint">
             <span aria-hidden="true" className="h-[3px] w-6 rounded-full bg-accent" />
             Workspace overview
           </div>

@@ -98,7 +98,7 @@ export function RepoHeader({
         <div className="min-w-0">
           <Link
             href="/app/repositories"
-            className="group inline-flex items-center gap-1.5 font-mono text-[0.75rem] uppercase tracking-[0.14em] text-faint transition-colors duration-200 hover:text-ink"
+            className="group inline-flex items-center gap-1.5 text-[0.75rem] text-faint transition-colors duration-200 hover:text-ink"
           >
             <ArrowLeft
               className="h-3.5 w-3.5 transition-transform duration-200 group-hover:-translate-x-0.5"
@@ -125,7 +125,7 @@ export function RepoHeader({
             <span className="tabular">{plural(stats.symbols, "symbol")}</span>
             <span className="tabular">{formatNumber(stats.edges)} edges</span>
             <span aria-hidden="true" className="hidden h-3 w-px bg-line sm:block" />
-            <span className="font-mono text-[0.75rem] uppercase tracking-[0.08em] text-faint">
+            <span className="text-[0.75rem] text-faint">
               {repository.provider}
               {repository.parser_mode ? ` · ${repository.parser_mode}` : ""}
             </span>
@@ -147,7 +147,7 @@ export function RepoHeader({
             >
               Provider
               <ArrowUpRight
-                className="h-3.5 w-3.5 transition-transform duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+                className="h-3.5 w-3.5"
                 aria-hidden="true"
               />
             </a>

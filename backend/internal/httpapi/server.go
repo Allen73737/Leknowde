@@ -104,6 +104,10 @@ func (s *Server) Router() http.Handler {
 		repos.POST("/:id/impact", s.handleCreateImpact)
 		repos.GET("/:id/documents", s.handleListDocuments)
 		repos.POST("/:id/documents", s.handleGenerateDocument)
+		repos.GET("/:id/readme", s.handleGetReadme)
+		repos.POST("/:id/readme", s.handleSaveReadme)
+		repos.GET("/:id/about", s.handleGetAbout)
+		repos.PUT("/:id/about", s.handleUpdateAbout)
 		repos.GET("/:id/conversations", s.handleListConversations)
 		repos.POST("/:id/conversations", s.handleCreateConversation)
 		repos.POST("/:id/chat", s.handleChat)
@@ -336,11 +340,11 @@ func (s *Server) handleHealth(c *gin.Context) {
 		code = http.StatusServiceUnavailable
 	}
 	c.JSON(code, gin.H{
-		"status":  map[bool]string{true: "ok", false: "degraded"}[dbStatus == "ok"],
-		"service": "leknowde-api",
-		"database": gin.H{"status": dbStatus, "driver": s.store.DB.Dialect},
+		"status":     map[bool]string{true: "ok", false: "degraded"}[dbStatus == "ok"],
+		"service":    "leknowde-api",
+		"database":   gin.H{"status": dbStatus, "driver": s.store.DB.Dialect},
 		"ai_service": gin.H{"status": aiStatus, "detail": aiDetail},
-		"time":   platform.Now(),
+		"time":       platform.Now(),
 	})
 }
 
@@ -349,27 +353,27 @@ func (s *Server) handleMeta(c *gin.Context) {
 	defer cancel()
 	aiStatus, aiErr := s.ai.Status(ctx)
 	payload := gin.H{
-		"product":  "LeKnowde",
-		"tagline":  "Learn the Code. Know the System.",
-		"version":  "1.0.0",
+		"product":     "LeKnowde",
+		"tagline":     "Learn the Code. Know the System.",
+		"version":     "1.0.0",
 		"api_version": "v1",
 		"capabilities": gin.H{
-			"repository_indexing": true,
-			"static_analysis":     true,
-			"dependency_graph":    true,
-			"impact_analysis":     true,
+			"repository_indexing":  true,
+			"static_analysis":      true,
+			"dependency_graph":     true,
+			"impact_analysis":      true,
 			"living_documentation": true,
-			"pr_intelligence":     true,
-			"digital_twin":        true,
+			"pr_intelligence":      true,
+			"digital_twin":         true,
 		},
-		"llm": gin.H{"configured": aiErr == nil && aiStatus.LLM.Configured, "provider": aiStatus.LLM.Provider, "model": aiStatus.LLM.Model, "reason": aiStatus.LLM.Reason},
+		"llm":        gin.H{"configured": aiErr == nil && aiStatus.LLM.Configured, "provider": aiStatus.LLM.Provider, "model": aiStatus.LLM.Model, "reason": aiStatus.LLM.Reason},
 		"embeddings": gin.H{"mode": aiStatus.Embeddings.Mode, "model": aiStatus.Embeddings.Model},
-		"parser": aiStatus.Parser,
+		"parser":     aiStatus.Parser,
 		"integrations": gin.H{
-			"github_oauth": s.cfg.GitHubClientID != "",
+			"github_oauth":         s.cfg.GitHubClientID != "",
 			"github_token_connect": true,
 			"gitlab_token_connect": true,
-			"demo_dataset": true,
+			"demo_dataset":         true,
 		},
 	}
 	if aiErr != nil {

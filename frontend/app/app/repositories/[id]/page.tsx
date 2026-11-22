@@ -104,7 +104,7 @@ export default async function RepositoryOverviewPage({ params }: { params: Promi
           </div>
           {fanIn.length > 0 ? (
             <div className="mt-auto border-t border-line px-4 py-3">
-              <p className="font-mono text-[0.6875rem] font-semibold uppercase tracking-[0.14em] text-faint">
+              <p className="text-[0.75rem] font-medium text-faint">
                 Most imported files
               </p>
               <ul className="mt-1.5">

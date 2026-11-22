@@ -63,9 +63,9 @@ export function ImpactReportView({
             </div>
           </div>
           <div className={cn("shrink-0 rounded-md border px-4 py-3 text-center", riskTone(analysis.risk.level))}>
-            <p className="font-mono text-[0.75rem] uppercase tracking-[0.14em] opacity-80">Risk</p>
+            <p className="text-[0.75rem] opacity-80">Risk</p>
             <p className="mt-0.5 font-display text-3xl font-semibold">{analysis.risk.score}</p>
-            <p className="font-mono text-[0.75rem] uppercase tracking-[0.12em]">{analysis.risk.level}</p>
+            <p className="text-[0.75rem]">{analysis.risk.level}</p>
           </div>
         </div>
         <div className="border-t border-line px-4 py-3">

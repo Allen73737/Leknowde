@@ -29,7 +29,7 @@ export function SiteHeader() {
           <Link
             href="/"
             aria-label="LeKnowde home"
-            className="focus-ring shrink-0 rounded-lg transition-transform duration-200 hover:scale-[1.02]"
+            className="focus-ring shrink-0 rounded-lg"
           >
             <Logo size={30} />
           </Link>

@@ -147,7 +147,7 @@ export default function FeaturesPage() {
               <Reveal>
                 <div className="flex flex-wrap items-center gap-3">
                   <Badge tone="accent">Platform 1.0</Badge>
-                  <span className="font-mono text-[0.75rem] uppercase tracking-[0.18em] text-faint">
+                  <span className="text-[0.75rem] text-faint">
                     {sections.length} connected surfaces
                   </span>
                 </div>
@@ -161,7 +161,7 @@ export default function FeaturesPage() {
                 </p>
               </Reveal>
               <Reveal delay={0.08}>
-                <p className="font-mono text-[0.75rem] uppercase tracking-[0.16em] text-faint">
+                <p className="text-[0.75rem] text-faint">
                   Shared foundation
                 </p>
                 <ul className="mt-5 grid grid-cols-[minmax(0,1fr)] gap-0">
@@ -195,7 +195,7 @@ export default function FeaturesPage() {
                 <a
                   key={section.id}
                   href={`#${section.id}`}
-                  className="group flex w-full items-center gap-2.5 rounded-lg border border-line bg-canvas px-3.5 py-2.5 text-[0.8125rem] text-muted transition-all duration-200 ease-smooth hover:-translate-y-0.5 hover:border-line-strong hover:text-ink hover:shadow-card"
+                  className="group flex w-full items-center gap-2.5 rounded-lg border border-line bg-canvas px-3.5 py-2.5 text-[0.8125rem] text-muted transition-colors duration-150 hover:border-line-strong hover:text-ink"
                 >
                   <span className="font-mono text-[0.75rem] text-faint">
                     {String(index + 1).padStart(2, "0")}
@@ -220,7 +220,7 @@ export default function FeaturesPage() {
             <div className="container-wide grid grid-cols-[minmax(0,1fr)] gap-10 py-16 sm:py-20 lg:grid-cols-[minmax(0,0.92fr)_minmax(0,1.08fr)] lg:items-center lg:gap-24 lg:py-24">
               <Reveal>
                 <div className="flex items-center gap-3">
-                  <span className="font-mono text-[0.75rem] tracking-[0.16em] text-faint">
+                  <span className="text-[0.75rem] text-faint">
                     {String(index + 1).padStart(2, "0")} / {String(sections.length).padStart(2, "0")}
                   </span>
                   <span className="h-px flex-1 bg-line" aria-hidden="true" />
@@ -249,7 +249,7 @@ export default function FeaturesPage() {
                     </li>
                   ))}
                 </ul>
-                <p className="mt-5 font-mono text-[0.75rem] uppercase tracking-[0.14em] text-faint">
+                <p className="mt-5 text-[0.75rem] text-faint">
                   Available in this build · deterministic unless marked otherwise
                 </p>
               </Reveal>

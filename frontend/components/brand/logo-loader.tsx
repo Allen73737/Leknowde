@@ -133,7 +133,7 @@ export function LogoLoader({
             </motion.span>
           ) : null}
           {label ? (
-            <span className="font-mono text-[0.75rem] uppercase leading-relaxed tracking-[0.16em] text-faint">
+            <span className="text-[0.75rem] leading-relaxed text-faint">
               {label}
             </span>
           ) : null}
@@ -175,7 +175,7 @@ export function LogoLoaderPanel({
             />
           )}
         </span>
-        <span className="font-mono text-[0.75rem] uppercase tracking-[0.14em] text-faint">
+        <span className="text-[0.75rem] text-faint">
           Deterministic core
         </span>
       </div>

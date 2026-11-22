@@ -43,7 +43,7 @@ function SystemNodeCard({ data, selected }: NodeProps<SystemNode>) {
     >
       <Handle type="target" position={Position.Left} className="!h-1.5 !w-1.5 !border-0 !bg-faint" />
       <div className="flex items-center justify-between gap-2">
-        <span className="font-mono text-[0.75rem] uppercase tracking-[0.1em] text-faint">
+        <span className="text-[0.75rem] text-faint">
           {data.kind}
         </span>
         <span className="font-mono text-[0.75rem] text-faint">{data.degree}</span>
@@ -161,7 +161,7 @@ export function SystemGraph({
             strokeWidth: active ? 1.6 : 1,
             opacity: dimmed ? 0.25 : 1,
           },
-          labelStyle: { fill: "var(--muted)", fontSize: 12, fontFamily: "var(--font-jetbrains)" },
+          labelStyle: { fill: "var(--muted)", fontSize: 12, fontFamily: "var(--font-manrope)" },
           labelBgStyle: { fill: "var(--shell)" },
           labelBgPadding: [4, 3] as [number, number],
           labelBgBorderRadius: 2,

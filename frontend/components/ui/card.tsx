@@ -169,7 +169,7 @@ export function Stat({
         className,
       )}
     >
-      <p className="font-mono text-[0.75rem] font-medium uppercase tracking-[0.14em] text-faint">
+      <p className="text-[0.75rem] font-medium text-muted">
         {label}
       </p>
       <p

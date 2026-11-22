@@ -156,7 +156,7 @@ export function MonacoCode({
         minimap: { enabled: false },
         fontSize: 13,
         lineHeight: 21,
-        fontFamily: "var(--font-jetbrains), JetBrains Mono, monospace",
+        fontFamily: "var(--font-plex-mono), IBM Plex Mono, monospace",
         scrollBeyondLastLine: false,
         smoothScrolling: true,
         renderLineHighlight: "line",

@@ -23,8 +23,8 @@ export function SeverityChart({ data }: { data: { severity: string; count: numbe
     return (
       <div className="space-y-2 px-4 py-4">
         <div className="flex items-baseline justify-between gap-3">
-          <span className="font-mono text-[0.8125rem] uppercase tracking-[0.1em] text-ink">{single.severity}</span>
-          <span className="tabular font-mono text-[0.8125rem] text-faint">{single.count} findings</span>
+          <span className="text-[0.8125rem] font-medium capitalize text-ink">{single.severity}</span>
+          <span className="tabular text-[0.8125rem] text-faint">{single.count} findings</span>
         </div>
         <div className="h-1.5 overflow-hidden rounded-full bg-raised">
           <div className="h-full rounded-full" style={{ width: "100%", background: colors[single.severity] ?? "var(--accent)" }} />
@@ -43,14 +43,14 @@ export function SeverityChart({ data }: { data: { severity: string; count: numbe
           <CartesianGrid stroke="var(--line)" strokeDasharray="2 4" vertical={false} />
           <XAxis
             dataKey="severity"
-            tick={{ fill: "var(--faint)", fontSize: 12, fontFamily: "var(--font-jetbrains)" }}
+            tick={{ fill: "var(--faint)", fontSize: 12, fontFamily: "var(--font-manrope)" }}
             axisLine={{ stroke: "var(--line)" }}
             tickLine={false}
             tickMargin={8}
           />
           <YAxis
             allowDecimals={false}
-            tick={{ fill: "var(--faint)", fontSize: 12, fontFamily: "var(--font-jetbrains)" }}
+            tick={{ fill: "var(--faint)", fontSize: 12, fontFamily: "var(--font-manrope)" }}
             axisLine={false}
             tickLine={false}
             width={38}

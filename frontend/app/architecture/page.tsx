@@ -90,7 +90,7 @@ export default function ArchitecturePage() {
                     <span className="flex h-9 w-9 items-center justify-center rounded border border-line bg-shell text-accent">
                       <layer.icon className="h-4 w-4" aria-hidden="true" />
                     </span>
-                    <span className="font-mono text-[0.75rem] uppercase tracking-[0.14em] text-faint">{layer.name}</span>
+                    <span className="text-[0.75rem] text-faint">{layer.name}</span>
                   </div>
                   <p className="mt-4 font-mono text-[0.75rem] leading-relaxed text-accent">{layer.stack}</p>
                   <p className="mt-2 text-xs leading-relaxed text-muted">{layer.role}</p>

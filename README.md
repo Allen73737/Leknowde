@@ -105,8 +105,9 @@ running stack, with zero page errors, plus a 57-assertion API smoke test.
   support, SVG favicon.
 
 ### Interface and design system
-- "Mineral Signal" identity: Sora for display, Manrope for text, JetBrains Mono
-  for data; stone and sage palette; no gradients, glows or translucent cards.
+- "Mineral Signal" identity: Sora for display, Manrope for text, IBM Plex Mono
+  for code and identifiers; sans-serif labels for interface metadata; stone and
+  sage palette; no gradients, glows or translucent cards.
 - Type scale from 12px micro-labels to 64px display, 17px body base, 12px floor
   across every route (verified by DOM measurement, not by eye; the interactive
   graph canvas scales as a unit when fitted or zoomed).
@@ -146,6 +147,9 @@ running stack, with zero page errors, plus a 57-assertion API smoke test.
   path, evidence snippets, existing tests, optional AI narrative.
 - Documentation studio: verified facts first, model prose second (clearly
   separated), persisted documents.
+- README and About studio: deterministic README draft plus a GitHub About panel
+  with up to 20 generated topics, editable description, persisted overrides and
+  save-to-documentation flow.
 - Health report: 18 findings on the demo, severity chart, penalties and stated
   limitations.
 - Assistant: retrieval-first answers, per-citation file/line/snippet/reason,

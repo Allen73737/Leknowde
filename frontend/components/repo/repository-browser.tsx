@@ -435,7 +435,7 @@ function ConnectPanel({
           {provider === "github" && githubOAuthEnabled && !connected ? (
             <a
               href="/api/lk/integrations/github/authorize"
-              className="mt-3 inline-flex h-10 items-center gap-2 rounded-lg border border-line bg-raised px-3.5 text-[0.875rem] text-ink transition-all duration-200 hover:-translate-y-0.5 hover:border-line-strong"
+              className="mt-3 inline-flex h-10 items-center gap-2 rounded-lg border border-line bg-raised px-3.5 text-[0.875rem] text-ink transition-colors duration-150 hover:border-line-strong"
             >
               <GitFork className="h-4 w-4" aria-hidden="true" /> Authorize with GitHub
             </a>

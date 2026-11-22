@@ -28,7 +28,7 @@ const config: Config = {
       fontFamily: {
         display: ["var(--font-sora)", "Sora", "ui-sans-serif", "system-ui", "sans-serif"],
         sans: ["var(--font-manrope)", "Manrope", "ui-sans-serif", "system-ui", "sans-serif"],
-        mono: ["var(--font-jetbrains)", "JetBrains Mono", "ui-monospace", "SFMono-Regular", "monospace"],
+        mono: ["var(--font-plex-mono)", "IBM Plex Mono", "ui-monospace", "SFMono-Regular", "monospace"],
       },
       // One deliberate scale, tuned for readability first.
       fontSize: {

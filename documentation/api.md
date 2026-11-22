@@ -86,6 +86,8 @@ workspace membership on every call.
 | GET | `/repositories/:id/twin` | Static graph projection with node-kind statistics. |
 | GET/POST | `/repositories/:id/impact` | List saved reports / run a new analysis. |
 | GET/POST | `/repositories/:id/documents` | List documents / generate one (`architecture`, `readme`, `api`, `onboarding`). |
+| GET/POST | `/repositories/:id/readme` | Deterministic README draft from indexed facts / save it as a document. |
+| GET/PUT | `/repositories/:id/about` | GitHub About payload: description, up to 20 topics, licence and manifest signals. |
 | GET/POST | `/repositories/:id/conversations` | List/create conversations. |
 | POST | `/repositories/:id/chat` | Retrieval-first answer; returns evidence even without an LLM. |
 | GET | `/repositories/:id/pull-requests` | Provider PR list (demo = fixtures). |
@@ -112,6 +114,9 @@ Standalone resources: `GET/PATCH/DELETE /documents/:id`,
 - `overview` → `{ repository, branch, stats, commits, endpoints, graph }`
 - `health` → `{ summary: { score, grade, findings, by_severity, by_kind, penalties, limitations, metrics }, findings, cycles, unused_import_candidates, stats, analyzed_at, parser }`
 - documents create → `{ document, generated_by_model, provider, note }`
+- readme → `{ markdown, title, source, about }`; `about` is the stored override when
+  present, otherwise a generated draft. `?source=generated` bypasses the override.
+- about → `{ description, topics, max_description, max_topics, license, manifests, has_readme, source }`.
 - impact create → `{ report, analysis }` where `analysis.ai_narrative_status`
   states whether a model narrative was generated or why it was not.
 - PR analyze → flat analysis object.
