@@ -82,7 +82,7 @@ export function NotificationList({ initial }: { initial: Notification[] }) {
     <div className="space-y-3">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <div className="flex items-center gap-2 text-xs text-muted">
-          <span className="font-mono text-[0.75rem] text-faint">
+          <span className="tabular text-[0.75rem] text-faint">
             {notifications.length} total · {unread} unread
           </span>
         </div>
@@ -113,7 +113,7 @@ export function NotificationList({ initial }: { initial: Notification[] }) {
             return (
               <li
                 key={notification.id}
-                className={cn("relative px-4 py-5 transition-colors duration-200 hover:bg-raised/30", !notification.read && "bg-accent/[0.035]")}
+                className={cn("relative px-5 py-5 transition-colors duration-200 hover:bg-raised/30", !notification.read && "bg-accent/[0.035]")}
               >
                 {!notification.read ? (
                   <span className="absolute inset-y-0 left-0 w-0.5 bg-accent" aria-hidden="true" />
@@ -134,7 +134,7 @@ export function NotificationList({ initial }: { initial: Notification[] }) {
                       </p>
                       <Badge tone={meta.tone}>{meta.label}</Badge>
                       {!notification.read ? <Badge tone="accent">unread</Badge> : null}
-                      <span className="font-mono text-[0.75rem] text-faint">{relativeTime(notification.created_at)}</span>
+                      <span className="text-[0.75rem] text-faint">{relativeTime(notification.created_at)}</span>
                     </div>
                     <p className="mt-1.5 text-[0.9375rem] leading-relaxed text-muted">{notification.body}</p>
                     <div className="mt-2 flex flex-wrap items-center gap-3">

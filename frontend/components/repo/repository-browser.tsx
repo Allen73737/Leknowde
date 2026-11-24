@@ -81,7 +81,7 @@ export function RepositoryBrowser({
   return (
     <div className="space-y-5">
       <Card className="shadow-card">
-        <div className="flex flex-col gap-4 px-4 py-4 sm:px-4 lg:flex-row lg:items-center lg:justify-between">
+        <div className="flex flex-col gap-4 px-5 py-3.5 sm:px-5 lg:flex-row lg:items-center lg:justify-between">
           <div
             className="flex flex-wrap items-center gap-1"
             role="tablist"
@@ -118,7 +118,7 @@ export function RepositoryBrowser({
                   ) : null}
                   <span className="relative">
                     {label}{" "}
-                    <span className="ml-1 font-mono text-[0.75rem] text-faint">{counts[value]}</span>
+                    <span className="ml-1 tabular text-[0.75rem] text-faint">{counts[value]}</span>
                   </span>
                 </button>
               );
@@ -166,7 +166,7 @@ export function RepositoryBrowser({
       ) : null}
 
       {filtered.length === 0 ? (
-        <Card className="px-4 py-16 text-center">
+        <Card className="px-6 py-16 text-center">
           <FileCode2 className="mx-auto h-7 w-7 text-faint" aria-hidden="true" />
           <h2 className="mt-4 font-display text-xl font-semibold text-ink">No repositories match</h2>
           <p className="mx-auto mt-2 max-w-md text-[0.9375rem] leading-relaxed text-muted">
@@ -181,69 +181,48 @@ export function RepositoryBrowser({
           ) : null}
         </Card>
       ) : (
-        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-          {filtered.map(({ repository, workspaceName }) => (
-            <Card key={repository.id} className="group flex flex-col card-hover">
-              <div className="flex items-start justify-between gap-3 px-4 pt-5">
-                <div className="min-w-0">
-                  <Link
-                    href={`/app/repositories/${repository.id}`}
-                    className="block truncate font-mono text-[0.875rem] font-medium text-ink transition-colors hover:text-accent"
-                  >
-                    {repository.full_name}
-                  </Link>
-                  <p className="mt-1.5 text-[0.8125rem] text-faint">{workspaceName}</p>
-                </div>
-                <StatusBadge status={repository.status} />
-              </div>
-              <p className="mt-3.5 line-clamp-2 flex-1 px-4 text-[0.875rem] leading-relaxed text-muted">
-                {repository.description || "No description supplied by the provider."}
-              </p>
-              <div className="mt-3.5 flex flex-wrap items-center gap-1.5 px-4">
-                <Badge>{repository.language || "unknown"}</Badge>
-                {repository.provider && repository.provider !== "demo" ? (
-                  <Badge>{repository.provider}</Badge>
-                ) : null}
-                {repository.is_demo ? <Badge tone="warning">demo dataset</Badge> : null}
-                {repository.visibility === "private" ? <Badge>private</Badge> : null}
-              </div>
-              <div className="mt-4 grid grid-cols-3 gap-2 border-t border-line px-4 py-3.5 font-mono text-[0.75rem] text-faint">
-                <span>
-                  <span className="block text-[0.875rem] text-ink">
-                    {formatNumber(repository.file_count)}
-                  </span>{" "}
-                  files
-                </span>
-                <span>
-                  <span className="block text-[0.875rem] text-ink">
-                    {formatNumber(repository.symbol_count)}
-                  </span>{" "}
-                  symbols
-                </span>
-                <span>
-                  <span className="block truncate text-[0.875rem] text-ink">
-                    {repository.default_branch}
-                  </span>{" "}
-                  branch
-                </span>
-              </div>
-              <div className="flex items-center justify-between border-t border-line px-4 py-3">
-                <span className="text-[0.75rem] text-faint">
-                  {repository.last_indexed_at
-                    ? `Indexed ${relativeTime(repository.last_indexed_at)}`
-                    : "Not indexed"}
-                </span>
+        <Card className="overflow-hidden">
+          <ul className="divide-y divide-line">
+            {filtered.map(({ repository, workspaceName }) => (
+              <li key={repository.id}>
                 <Link
                   href={`/app/repositories/${repository.id}`}
-                  className="inline-flex items-center gap-1.5 text-[0.8125rem] font-semibold text-accent transition-colors hover:text-ink"
+                  className="group grid gap-3 px-5 py-4 transition-colors duration-150 hover:bg-raised/30 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center"
                 >
-                  Open
-                  <ArrowRight className="arrow-slide h-3.5 w-3.5" aria-hidden="true" />
+                  <div className="min-w-0">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <span className="truncate font-mono text-[0.875rem] font-medium text-ink transition-colors group-hover:text-accent">
+                        {repository.full_name}
+                      </span>
+                      <StatusBadge status={repository.status} />
+                      {repository.is_demo ? <Badge tone="warning">demo dataset</Badge> : null}
+                      {repository.visibility === "private" ? <Badge>private</Badge> : null}
+                    </div>
+                    <p className="mt-1 line-clamp-1 text-[0.8125rem] leading-relaxed text-muted">
+                      {repository.description || "No description supplied by the provider."}
+                    </p>
+                    <p className="mt-1.5 text-[0.75rem] text-faint">
+                      {workspaceName} · {repository.language || "unknown"} ·{" "}
+                      {formatNumber(repository.file_count)} files ·{" "}
+                      {formatNumber(repository.symbol_count)} symbols · {repository.default_branch}
+                    </p>
+                  </div>
+                  <div className="flex items-center justify-between gap-4 lg:justify-end">
+                    <span className="text-[0.75rem] text-faint">
+                      {repository.last_indexed_at
+                        ? `Indexed ${relativeTime(repository.last_indexed_at)}`
+                        : "Not indexed"}
+                    </span>
+                    <span className="inline-flex items-center gap-1.5 text-[0.8125rem] font-semibold text-accent transition-colors group-hover:text-ink">
+                      Open
+                      <ArrowRight className="arrow-slide h-3.5 w-3.5" aria-hidden="true" />
+                    </span>
+                  </div>
                 </Link>
-              </div>
-            </Card>
-          ))}
-        </div>
+              </li>
+            ))}
+          </ul>
+        </Card>
       )}
     </div>
   );

@@ -1,12 +1,12 @@
 import Link from "next/link";
-import { Activity, ArrowRight, Boxes, FileCode2, Plus, Server } from "lucide-react";
+import { ArrowRight, Boxes, ChevronRight, FileCode2, Plus, Server } from "lucide-react";
 
 import { ApiErrorNote } from "@/components/app/error-note";
 import { DemoConnectButton } from "@/components/repo/demo-connect-button";
 import { StatusBadge } from "@/components/repo/status-badge";
 import { Badge } from "@/components/ui/badge";
 import { buttonStyles } from "@/components/ui/button";
-import { Card, CardHeader, EmptyState, Stat } from "@/components/ui/card";
+import { Card, CardHeader, EmptyState, MetricBand, SectionHeading } from "@/components/ui/card";
 import { getDashboard, getWorkspaces } from "@/lib/app-data";
 import { formatNumber, plural, relativeTime } from "@/lib/format";
 import { safeGet } from "@/lib/server-api";
@@ -31,179 +31,163 @@ export default async function DashboardPage() {
   const stats = dashboard?.stats;
 
   return (
-    <div className="space-y-5">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-        <div className="min-w-0">
-          <p className="text-[0.75rem] font-medium text-faint">
-            Workspace overview
-          </p>
-          <h1 className="mt-1.5 font-display text-[1.625rem] font-semibold leading-tight tracking-[-0.03em] text-ink sm:text-[1.75rem]">
-            Welcome back, {firstName}
-          </h1>
-          <p className="mt-1.5 text-[0.875rem] leading-relaxed text-muted">
-            {stats
-              ? `${plural(stats.workspaces, "workspace")} · ${formatNumber(stats.ready_repositories)} of ${formatNumber(stats.repositories)} repositories indexed${
-                  stats.active_jobs > 0 ? ` · ${plural(stats.active_jobs, "job")} running` : ""
-                }`
-              : "Everything you can reach, with computed structure kept separate from generated judgment."}
-          </p>
-        </div>
-        <div className="flex shrink-0 flex-wrap items-center gap-2">
-          <Link href="/app/workspaces" className={buttonStyles("secondary", "sm")}>
-            <Boxes className="h-3.5 w-3.5" aria-hidden="true" /> Workspaces
-          </Link>
-          <Link href="/app/repositories" className={buttonStyles("primary", "sm")}>
-            <Plus className="h-3.5 w-3.5" aria-hidden="true" /> Add repository
-          </Link>
-        </div>
-      </div>
+    <div className="space-y-7">
+      <SectionHeading
+        title={`Welcome back, ${firstName}`}
+        description={
+          stats
+            ? `${plural(stats.workspaces, "workspace")} · ${formatNumber(stats.ready_repositories)} of ${formatNumber(stats.repositories)} repositories indexed${
+                stats.active_jobs > 0 ? ` · ${plural(stats.active_jobs, "job")} running` : ""
+              }`
+            : "Everything you can reach, with computed structure kept separate from generated judgment."
+        }
+        action={
+          <div className="flex flex-wrap items-center gap-2">
+            <Link href="/app/workspaces" className={buttonStyles("ghost", "sm")}>
+              <Boxes className="h-3.5 w-3.5" aria-hidden="true" /> Workspaces
+            </Link>
+            <Link href="/app/repositories" className={buttonStyles("primary", "sm")}>
+              <Plus className="h-3.5 w-3.5" aria-hidden="true" /> Add repository
+            </Link>
+          </div>
+        }
+      />
 
       {!dashboard ? (
         <ApiErrorNote error={dashboardResult.error} retryHref="/app" />
       ) : (
         <>
-          <div className="grid grid-cols-2 gap-2.5 sm:gap-3 lg:grid-cols-4">
-            <Stat
-              label="Repositories"
-              value={formatNumber(dashboard.stats.repositories)}
-              hint={`${formatNumber(dashboard.stats.ready_repositories)} indexed and ready`}
-            />
-            <Stat
-              label="Indexed files"
-              value={formatNumber(dashboard.stats.files)}
-              hint={`Across ${plural(dashboard.stats.workspaces, "workspace")}`}
-            />
-            <Stat
-              label="Symbols"
-              value={formatNumber(dashboard.stats.symbols)}
-              hint="Functions, classes and types"
-            />
-            <Stat
-              label="Findings"
-              value={formatNumber(dashboard.stats.findings)}
-              hint={`${formatNumber(dashboard.stats.critical_findings)} high or critical`}
-              tone={dashboard.stats.critical_findings > 0 ? "warning" : "default"}
-            />
-          </div>
+          <MetricBand
+            items={[
+              {
+                label: "Repositories",
+                value: formatNumber(dashboard.stats.repositories),
+                hint: `${formatNumber(dashboard.stats.ready_repositories)} indexed and ready`,
+              },
+              {
+                label: "Indexed files",
+                value: formatNumber(dashboard.stats.files),
+                hint: `Across ${plural(dashboard.stats.workspaces, "workspace")}`,
+              },
+              {
+                label: "Symbols",
+                value: formatNumber(dashboard.stats.symbols),
+                hint: "Functions, classes and types",
+              },
+              {
+                label: "Findings",
+                value: formatNumber(dashboard.stats.findings),
+                hint: `${formatNumber(dashboard.stats.critical_findings)} high or critical`,
+                tone: dashboard.stats.critical_findings > 0 ? "warning" : "default",
+              },
+            ]}
+          />
 
-          <Card className="overflow-hidden">
-            <CardHeader
-              title="Repositories"
-              description={
-                dashboard.stats.active_jobs > 0
-                  ? `${plural(dashboard.stats.active_jobs, "job")} running now. Ordered by last update.`
-                  : "Most recently updated first. Status reflects the latest indexing job."
-              }
-              action={
-                <Link
-                  href="/app/repositories"
-                  className="inline-flex items-center gap-1 text-[0.8125rem] font-semibold text-accent transition-colors hover:text-ink"
-                >
-                  View all
-                  <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
-                </Link>
-              }
-            />
-            {dashboard.recent_repositories.length === 0 ? (
-              <EmptyState
-                icon={<FileCode2 className="h-5 w-5" aria-hidden="true" />}
-                title="No repositories yet"
-                description="Connect the bundled demo dataset to run the full ingest, parse, graph and impact pipeline without external credentials."
+          <div className="grid gap-6 xl:grid-cols-[minmax(0,1.7fr)_minmax(0,1fr)]">
+            <Card className="overflow-hidden">
+              <CardHeader
+                title="Repositories"
+                description={
+                  dashboard.stats.active_jobs > 0
+                    ? `${plural(dashboard.stats.active_jobs, "job")} running now. Ordered by last update.`
+                    : "Most recently updated first. Status reflects the latest indexing job."
+                }
                 action={
-                  primaryWorkspace ? (
-                    <DemoConnectButton workspaceID={primaryWorkspace.id} />
-                  ) : (
-                    <Link href="/app/workspaces" className={buttonStyles("primary", "sm")}>
-                      Create a workspace
-                    </Link>
-                  )
+                  <Link
+                    href="/app/repositories"
+                    className="inline-flex items-center gap-1 text-[0.8125rem] font-semibold text-accent transition-colors hover:text-ink"
+                  >
+                    View all
+                    <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
+                  </Link>
                 }
               />
-            ) : (
-              <div className="overflow-x-auto">
-                <table className="w-full min-w-[560px] border-collapse text-left">
-                  <thead>
-                    <tr className="border-b border-line">
-                      <th className="px-4 py-2 text-[0.75rem] font-medium text-faint">
-                        Repository
-                      </th>
-                      <th className="px-4 py-2 text-[0.75rem] font-medium text-faint">
-                        Status
-                      </th>
-                      <th className="w-20 px-4 py-2 text-right text-[0.75rem] font-medium text-faint">
-                        Files
-                      </th>
-                      <th className="w-24 px-4 py-2 text-right text-[0.75rem] font-medium text-faint">
-                        Symbols
-                      </th>
-                      <th className="w-28 px-4 py-2 text-right text-[0.75rem] font-medium text-faint">
-                        Updated
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-line">
-                    {dashboard.recent_repositories.slice(0, 6).map((repo) => (
-                      <tr key={repo.id} className="group transition-colors duration-150 hover:bg-raised/40">
-                        <td className="px-4 py-2.5">
-                          <Link href={`/app/repositories/${repo.id}`} className="block min-w-0">
-                            <span className="flex items-center gap-2">
-                              <span className="truncate font-mono text-[0.8125rem] font-medium text-ink transition-colors group-hover:text-accent">
-                                {repo.full_name}
-                              </span>
-                              {repo.is_demo ? <Badge tone="warning">demo</Badge> : null}
+              {dashboard.recent_repositories.length === 0 ? (
+                <EmptyState
+                  icon={<FileCode2 className="h-5 w-5" aria-hidden="true" />}
+                  title="No repositories yet"
+                  description="Connect the bundled demo dataset to run the full ingest, parse, graph and impact pipeline without external credentials."
+                  action={
+                    primaryWorkspace ? (
+                      <DemoConnectButton workspaceID={primaryWorkspace.id} />
+                    ) : (
+                      <Link href="/app/workspaces" className={buttonStyles("primary", "sm")}>
+                        Create a workspace
+                      </Link>
+                    )
+                  }
+                />
+              ) : (
+                <ul className="divide-y divide-line">
+                  {dashboard.recent_repositories.slice(0, 6).map((repo) => (
+                    <li key={repo.id}>
+                      <Link
+                        href={`/app/repositories/${repo.id}`}
+                        className="group grid gap-3 px-5 py-4 transition-colors duration-150 hover:bg-raised/30 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center"
+                      >
+                        <div className="min-w-0">
+                          <div className="flex flex-wrap items-center gap-2">
+                            <span className="truncate font-mono text-[0.875rem] font-medium text-ink transition-colors group-hover:text-accent">
+                              {repo.full_name}
                             </span>
-                            <span className="mt-0.5 block truncate text-[0.75rem] text-faint">
-                              {repo.language || "Unknown language"} · {plural(repo.file_count, "file")}
-                            </span>
-                          </Link>
-                        </td>
-                        <td className="px-4 py-2.5">
+                            {repo.is_demo ? <Badge tone="warning">demo</Badge> : null}
+                          </div>
+                          <p className="mt-1 line-clamp-1 text-[0.8125rem] leading-relaxed text-muted">
+                            {repo.description || `${repo.language || "Unknown language"} repository`}
+                          </p>
+                        </div>
+                        <div className="flex items-center gap-4 sm:justify-end">
+                          <div className="hidden text-right sm:block">
+                            <p className="tabular text-[0.8125rem] text-ink">
+                              {plural(repo.file_count, "file")} · {plural(repo.symbol_count, "symbol")}
+                            </p>
+                            <p className="mt-0.5 text-[0.75rem] text-faint">
+                              Updated {relativeTime(repo.updated_at)}
+                            </p>
+                          </div>
                           <StatusBadge status={repo.status} />
-                        </td>
-                        <td className="tabular px-4 py-2.5 text-right font-mono text-[0.8125rem] text-muted">
-                          {formatNumber(repo.file_count)}
-                        </td>
-                        <td className="tabular px-4 py-2.5 text-right font-mono text-[0.8125rem] text-muted">
-                          {formatNumber(repo.symbol_count)}
-                        </td>
-                        <td className="px-4 py-2.5 text-right font-mono text-[0.75rem] text-faint">
-                          {relativeTime(repo.updated_at)}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            )}
-          </Card>
+                          <ChevronRight
+                            className="h-4 w-4 shrink-0 text-faint transition-transform duration-200 group-hover:translate-x-0.5 group-hover:text-muted"
+                            aria-hidden="true"
+                          />
+                        </div>
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </Card>
 
-          <div className="grid items-start gap-5 lg:grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)]">
             <Card className="overflow-hidden">
               <CardHeader
                 title="Activity"
+                description="Platform events, not model output."
                 action={
                   <Link
                     href="/app/notifications"
                     className="text-[0.8125rem] font-semibold text-accent transition-colors hover:text-ink"
                   >
-                    All
+                    View all
                   </Link>
                 }
               />
               {dashboard.notifications.length === 0 ? (
-                <p className="px-4 py-10 text-center text-[0.875rem] text-faint">
-                  Nothing has happened yet.
-                </p>
+                <div className="px-5 py-12 text-center">
+                  <p className="text-[0.875rem] text-faint">Nothing has happened yet.</p>
+                  <p className="mt-1 text-[0.8125rem] text-faint">
+                    Indexing results and membership changes appear here.
+                  </p>
+                </div>
               ) : (
                 <ul className="divide-y divide-line">
                   {dashboard.notifications.slice(0, 5).map((notification) => (
-                    <li key={notification.id} className="px-4 py-3">
+                    <li key={notification.id} className="px-5 py-4">
                       <div className="flex items-start justify-between gap-3">
                         <div className="min-w-0">
                           <p className="truncate text-[0.875rem] font-medium text-ink">
                             {notification.title}
                           </p>
-                          <p className="mt-0.5 line-clamp-2 text-[0.8125rem] leading-relaxed text-muted">
+                          <p className="mt-1 line-clamp-2 text-[0.8125rem] leading-relaxed text-muted">
                             {notification.body}
                           </p>
                         </div>
@@ -214,7 +198,7 @@ export default async function DashboardPage() {
                           />
                         ) : null}
                       </div>
-                      <p className="mt-1.5 text-[0.75rem] text-faint">
+                      <p className="mt-2 text-[0.75rem] text-faint">
                         {notification.kind.replace(/_/g, " ")} · {relativeTime(notification.created_at)}
                       </p>
                     </li>
@@ -222,51 +206,51 @@ export default async function DashboardPage() {
                 </ul>
               )}
             </Card>
-
-            <Card className="overflow-hidden">
-              <CardHeader
-                title="Runtime"
-                description="Reported by the running API and AI service."
-                icon={<Server className="h-4 w-4" aria-hidden="true" />}
-              />
-              <dl className="divide-y divide-line text-[0.875rem]">
-                <div className="flex items-center justify-between gap-3 px-4 py-2">
-                  <dt className="text-muted">Parser</dt>
-                  <dd>
-                    <Badge tone="accent">{meta?.parser ?? "unknown"}</Badge>
-                  </dd>
-                </div>
-                <div className="flex items-center justify-between gap-3 px-4 py-2">
-                  <dt className="text-muted">LLM generation</dt>
-                  <dd>
-                    <Badge tone={meta?.llm?.configured ? "success" : "warning"}>
-                      {meta?.llm?.configured ? "configured" : "not configured"}
-                    </Badge>
-                  </dd>
-                </div>
-                <div className="flex items-center justify-between gap-3 px-4 py-2">
-                  <dt className="text-muted">Embeddings</dt>
-                  <dd>
-                    <Badge>{meta?.embeddings?.mode ?? "unknown"}</Badge>
-                  </dd>
-                </div>
-                <div className="flex items-center justify-between gap-3 px-4 py-2">
-                  <dt className="text-muted">AI service</dt>
-                  <dd>
-                    <Badge tone={meta?.ai_service?.status === "unavailable" ? "danger" : "success"}>
-                      {meta?.ai_service?.status ?? "reachable"}
-                    </Badge>
-                  </dd>
-                </div>
-              </dl>
-              {!meta?.llm?.configured ? (
-                <p className="border-t border-line px-4 py-2.5 text-[0.8125rem] leading-relaxed text-faint">
-                  Answers stay extractive until a provider key is set. Graph, impact, health and
-                  documentation fallbacks keep working.
-                </p>
-              ) : null}
-            </Card>
           </div>
+
+          <Card className="overflow-hidden">
+            <div className="flex flex-col gap-3 px-5 py-4 lg:flex-row lg:items-center lg:justify-between">
+              <div className="flex items-center gap-3">
+                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-line bg-shell text-faint">
+                  <Server className="h-4 w-4" aria-hidden="true" />
+                </span>
+                <div>
+                  <p className="text-[0.8125rem] font-medium text-ink">Runtime</p>
+                  <p className="text-[0.75rem] text-faint">
+                    Reported by the running API and AI service.
+                  </p>
+                </div>
+              </div>
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="inline-flex items-center gap-1.5 text-[0.75rem] text-faint">
+                  Parser
+                  <Badge tone="accent">{meta?.parser || "not reported"}</Badge>
+                </span>
+                <span className="inline-flex items-center gap-1.5 text-[0.75rem] text-faint">
+                  LLM
+                  <Badge tone={meta?.llm?.configured ? "success" : "warning"}>
+                    {meta?.llm?.configured ? "configured" : "not configured"}
+                  </Badge>
+                </span>
+                <span className="inline-flex items-center gap-1.5 text-[0.75rem] text-faint">
+                  Embeddings
+                  <Badge>{meta?.embeddings?.mode || "not reported"}</Badge>
+                </span>
+                <span className="inline-flex items-center gap-1.5 text-[0.75rem] text-faint">
+                  AI service
+                  <Badge tone={meta?.ai_service?.status === "unavailable" ? "danger" : meta ? "success" : "neutral"}>
+                    {meta?.ai_service?.status ?? "not reported"}
+                  </Badge>
+                </span>
+              </div>
+            </div>
+            {!meta?.llm?.configured ? (
+              <p className="border-t border-line px-5 py-2.5 text-[0.8125rem] leading-relaxed text-faint">
+                Answers stay extractive until a provider key is set. Graph, impact, health and
+                documentation fallbacks keep working.
+              </p>
+            ) : null}
+          </Card>
         </>
       )}
     </div>

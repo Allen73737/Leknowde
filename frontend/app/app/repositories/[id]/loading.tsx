@@ -9,15 +9,19 @@ import { LogoLoader } from "@/components/brand/logo-loader";
  */
 export default function RepositoryLoading() {
   return (
-    <div className="space-y-5" role="status" aria-live="polite">
+    <div className="space-y-6" role="status" aria-live="polite">
       <div className="flex items-center justify-between gap-4">
         <LogoLoader size={24} label="Loading repository data" />
         <div className="h-3 w-24 skeleton rounded" />
       </div>
 
-      <div className="grid grid-cols-2 gap-3 sm:gap-3.5 lg:grid-cols-4">
+      <div className="grid grid-cols-2 gap-px overflow-hidden rounded-card border border-line bg-line lg:grid-cols-4">
         {[0, 1, 2, 3].map((index) => (
-          <div key={index} className="h-[104px] skeleton rounded-card border border-line" />
+          <div key={index} className="h-[104px] bg-surface px-5 py-4">
+            <div className="h-3 w-20 skeleton rounded" />
+            <div className="mt-3 h-7 w-16 skeleton rounded" />
+            <div className="mt-3 h-3 w-28 skeleton rounded" />
+          </div>
         ))}
       </div>
 
@@ -27,11 +31,11 @@ export default function RepositoryLoading() {
             key={index}
             className="overflow-hidden rounded-card border border-line bg-surface"
           >
-            <div className="border-b border-line px-4 py-4">
+            <div className="border-b border-line px-5 py-4">
               <div className="h-4 w-44 skeleton rounded" />
               <div className="mt-2 h-3 w-56 max-w-full skeleton rounded" />
             </div>
-            <div className="space-y-3.5 px-4 py-5">
+            <div className="space-y-3.5 px-5 py-5">
               {[0, 1, 2, 3].map((row) => (
                 <div key={row} className="space-y-2">
                   <div className="flex justify-between gap-4">

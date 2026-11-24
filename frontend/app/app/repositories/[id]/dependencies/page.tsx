@@ -3,7 +3,7 @@ import { AlertTriangle, ArrowRight, GitBranch, Network, Repeat2, Workflow } from
 
 import { ApiErrorNote, NotIndexedNotice } from "@/components/app/error-note";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardHeader, SectionHeading, Stat } from "@/components/ui/card";
+import { Card, CardHeader, MetricBand, SectionHeading } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { getRepositoryBundle } from "@/lib/app-data";
 import { formatNumber } from "@/lib/format";
@@ -40,7 +40,7 @@ export default async function DependenciesPage({ params }: { params: Promise<{ i
   const moduleList = [...modules].sort((a, b) => b.count - a.count);
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       <SectionHeading
         title="Dependencies"
         description="Resolved file imports aggregated into module edges. External packages are recorded in source but are not graph nodes, so this view does not audit them."
@@ -54,19 +54,25 @@ export default async function DependenciesPage({ params }: { params: Promise<{ i
         }
       />
 
-      <div className="grid grid-cols-2 gap-2.5 sm:gap-3 lg:grid-cols-4">
-        <Stat label="Dependency edges" value={formatNumber(summary.total)} hint="All graph relations" />
-        <Stat label="Module edges" value={formatNumber(modules.length)} hint="Aggregated file imports" />
-        <Stat
-          label="Circular groups"
-          value={formatNumber(cycles.length)}
-          hint="Detected import cycles"
-          tone={cycles.length > 0 ? "warning" : "default"}
-        />
-        <Stat label="Unused candidates" value={formatNumber(unused_imports.length)} hint="Heuristic, not proof" />
-      </div>
+      <MetricBand
+        items={[
+          { label: "Dependency edges", value: formatNumber(summary.total), hint: "All graph relations" },
+          { label: "Module edges", value: formatNumber(modules.length), hint: "Aggregated file imports" },
+          {
+            label: "Circular groups",
+            value: formatNumber(cycles.length),
+            hint: "Detected import cycles",
+            tone: cycles.length > 0 ? "warning" : "default",
+          },
+          {
+            label: "Unused candidates",
+            value: formatNumber(unused_imports.length),
+            hint: "Heuristic, not proof",
+          },
+        ]}
+      />
 
-      <div className="grid grid-cols-[minmax(0,1fr)] items-start gap-4 lg:grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)]">
+      <div className="grid grid-cols-[minmax(0,1fr)] items-start gap-5 lg:grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)]">
         <Card className="overflow-hidden">
           <CardHeader
             title="Module coupling"
@@ -79,7 +85,7 @@ export default async function DependenciesPage({ params }: { params: Promise<{ i
             }
           />
           {moduleList.length === 0 ? (
-            <p className="px-4 py-10 text-center text-[0.875rem] text-faint">
+            <p className="px-5 py-10 text-center text-[0.875rem] text-faint">
               No module-level imports were resolved.
             </p>
           ) : (
@@ -87,19 +93,19 @@ export default async function DependenciesPage({ params }: { params: Promise<{ i
               <table className="data-table w-full text-left">
                 <thead>
                   <tr>
-                    <th className="px-4">From</th>
+                    <th className="px-5">From</th>
                     <th className="px-1" />
                     <th className="px-1">To</th>
-                    <th className="px-4 text-right">Imports</th>
+                    <th className="px-5 text-right">Imports</th>
                   </tr>
                 </thead>
                 <tbody>
                   {moduleList.map((edge) => (
                     <tr key={`${edge.from}-${edge.to}`}>
-                      <td className="px-4 font-mono text-[0.75rem] text-ink">{edge.from}</td>
+                      <td className="px-5 font-mono text-[0.75rem] text-ink">{edge.from}</td>
                       <td className="px-1 py-2.5 text-faint">→</td>
                       <td className="px-1 font-mono text-[0.75rem] text-muted">{edge.to}</td>
-                      <td className="px-4">
+                      <td className="px-5">
                         <div className="flex items-center justify-end gap-2">
                           <Progress value={(edge.count / maxModuleCount) * 100} className="h-1 w-16" />
                           <span className="tabular w-5 text-right font-mono text-[0.75rem] text-faint">
@@ -115,7 +121,7 @@ export default async function DependenciesPage({ params }: { params: Promise<{ i
           )}
         </Card>
 
-        <div className="space-y-4">
+        <div className="space-y-5">
           <Card className="overflow-hidden">
             <CardHeader
               title="Fan-in leaders"
@@ -123,18 +129,18 @@ export default async function DependenciesPage({ params }: { params: Promise<{ i
               icon={<Network className="h-4 w-4" aria-hidden="true" />}
             />
             {summary.top_files.length === 0 ? (
-              <p className="px-4 py-8 text-center text-[0.875rem] text-faint">No fan-in data.</p>
+              <p className="px-5 py-10 text-center text-[0.875rem] text-faint">No fan-in data.</p>
             ) : (
               <ul className="divide-y divide-line">
                 {summary.top_files.slice(0, 6).map((file) => (
-                  <li key={file.path} className="flex items-center justify-between gap-3 px-4 py-2">
+                  <li key={file.path} className="flex items-center justify-between gap-3 px-5 py-2.5">
                     <Link
                       href={`/app/repositories/${id}/explorer?path=${encodeURIComponent(file.path)}`}
                       className="min-w-0 truncate font-mono text-[0.75rem] text-ink transition-colors hover:text-accent"
                     >
                       {file.path}
                     </Link>
-                    <span className="tabular shrink-0 font-mono text-[0.75rem] text-faint">
+                    <span className="tabular shrink-0 text-[0.75rem] text-faint">
                       {file.in_degree} in
                     </span>
                   </li>
@@ -149,14 +155,14 @@ export default async function DependenciesPage({ params }: { params: Promise<{ i
               icon={<GitBranch className="h-4 w-4" aria-hidden="true" />}
               action={<Badge>{summary.relations.length} types</Badge>}
             />
-            <div className="space-y-1.5 px-4 py-3">
+            <div className="space-y-1.5 px-5 py-3.5">
               {summary.relations.length === 0 ? (
                 <p className="text-[0.875rem] text-faint">No graph relations recorded.</p>
               ) : (
                 summary.relations.map((relation) => (
                   <div key={relation.relation} className="flex items-center justify-between gap-3">
                     <span className="font-mono text-[0.75rem] text-muted">{relation.relation}</span>
-                    <span className="tabular font-mono text-[0.75rem] text-faint">
+                    <span className="tabular text-[0.75rem] text-faint">
                       {formatNumber(relation.count)}
                     </span>
                   </div>
@@ -167,7 +173,7 @@ export default async function DependenciesPage({ params }: { params: Promise<{ i
         </div>
       </div>
 
-      <div className="grid grid-cols-[minmax(0,1fr)] items-start gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.35fr)]">
+      <div className="grid grid-cols-[minmax(0,1fr)] items-start gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.35fr)]">
         <Card className="overflow-hidden">
           <CardHeader
             title="Circular groups"
@@ -175,13 +181,13 @@ export default async function DependenciesPage({ params }: { params: Promise<{ i
             action={<Badge tone={cycles.length > 0 ? "warning" : "success"}>{cycles.length}</Badge>}
           />
           {cycles.length === 0 ? (
-            <p className="px-4 py-8 text-center text-[0.875rem] text-faint">
+            <p className="px-5 py-10 text-center text-[0.875rem] text-faint">
               No circular import groups were detected.
             </p>
           ) : (
             <ul className="max-h-[300px] divide-y divide-line overflow-y-auto">
               {cycles.map((cycle, index) => (
-                <li key={`cycle-${index}`} className="px-4 py-2.5">
+                <li key={`cycle-${index}`} className="px-5 py-3">
                   <p className="font-mono text-[0.75rem] leading-relaxed text-muted">{cycle.join(" → ")}</p>
                 </li>
               ))}
@@ -199,14 +205,14 @@ export default async function DependenciesPage({ params }: { params: Promise<{ i
             }
           />
           {unused_imports.length === 0 ? (
-            <p className="px-4 py-8 text-center text-[0.875rem] text-faint">
+            <p className="px-5 py-10 text-center text-[0.875rem] text-faint">
               No unused-import candidates were found.
             </p>
           ) : (
             <>
               <ul className="max-h-[300px] divide-y divide-line overflow-y-auto">
                 {unused_imports.map((item, index) => (
-                  <li key={`${item.file}-${item.line}-${index}`} className="px-4 py-2.5">
+                  <li key={`${item.file}-${item.line}-${index}`} className="px-5 py-3">
                     <div className="flex flex-wrap items-center justify-between gap-2">
                       <Link
                         href={`/app/repositories/${id}/explorer?path=${encodeURIComponent(item.file)}`}

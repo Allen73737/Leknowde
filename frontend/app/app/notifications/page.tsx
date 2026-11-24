@@ -13,7 +13,7 @@ export default async function NotificationsPage() {
 
   if (!result.data) {
     return (
-      <div className="space-y-4">
+      <div className="space-y-6">
         <SectionHeading title="Notifications" />
         <ApiErrorNote error={result.error} retryHref="/app/notifications" />
       </div>
@@ -21,24 +21,24 @@ export default async function NotificationsPage() {
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       <SectionHeading
         title="Notifications"
         description="Indexing outcomes and workspace membership changes recorded for your account. These are platform events, not model output."
         action={<Bell className="h-4 w-4 text-faint" aria-hidden="true" />}
       />
 
-      <div className="grid grid-cols-[minmax(0,1fr)] gap-4 lg:grid-cols-[1.6fr_1fr]">
+      <div className="grid grid-cols-[minmax(0,1fr)] gap-5 lg:grid-cols-[1.6fr_1fr]">
         <NotificationList initial={result.data.notifications} />
 
-        <div className="space-y-4">
+        <div className="space-y-5">
           <Card>
             <CardHeader
               title="What generates a notification"
               description="Only server-side events with a known recipient."
               icon={<Info className="h-4 w-4" aria-hidden="true" />}
             />
-            <ul className="space-y-2 px-4 py-4 text-[0.8125rem] leading-relaxed text-muted">
+            <ul className="space-y-2 px-5 py-4 text-[0.8125rem] leading-relaxed text-muted">
               <li>
                 <span className="font-medium text-ink">Indexing complete.</span> Sent to the workspace owner with the
                 file and symbol counts actually written.
@@ -48,7 +48,7 @@ export default async function NotificationsPage() {
                 was granted membership.
               </li>
             </ul>
-            <p className="border-t border-line px-4 py-3 text-[0.75rem] leading-relaxed text-faint">
+            <p className="border-t border-line px-5 py-3 text-[0.75rem] leading-relaxed text-faint">
               Job failures are visible in the repository header and job log. They do not currently create a separate
               notification row.
             </p>
@@ -60,7 +60,7 @@ export default async function NotificationsPage() {
               description="No email provider is configured in this build."
               icon={<MailX className="h-4 w-4" aria-hidden="true" />}
             />
-            <div className="px-4 py-4 text-[0.8125rem] leading-relaxed text-muted">
+            <div className="px-5 py-4 text-[0.8125rem] leading-relaxed text-muted">
               <p>
                 Notifications are stored in the database and shown here. There is no outbound email, push or webhook
                 delivery, so nothing is sent off-platform.

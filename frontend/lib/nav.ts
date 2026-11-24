@@ -41,6 +41,11 @@ export const repoNav: RepoNavItem[] = [
   { label: "Digital twin", segment: "twin", icon: Boxes, description: "Whole-system model and flows" },
 ];
 
+export const primaryNav: { label: string; href: string; icon: LucideIcon }[] = [
+  { label: "Dashboard", href: "/app", icon: LayoutDashboard },
+  { label: "Repositories", href: "/app/repositories", icon: FileCode2 },
+];
+
 export const workspaceNav: { label: string; href: string; icon: LucideIcon }[] = [
   { label: "Dashboard", href: "/app", icon: LayoutDashboard },
   { label: "Workspaces", href: "/app/workspaces", icon: Boxes },

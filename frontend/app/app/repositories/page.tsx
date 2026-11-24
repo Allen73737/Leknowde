@@ -20,7 +20,7 @@ export default async function RepositoriesPage({
 
   if (!workspacesResult.data) {
     return (
-      <div className="space-y-4">
+      <div className="space-y-6">
         <SectionHeading title="Repositories" />
         <ApiErrorNote error={workspacesResult.error} retryHref="/app/repositories" />
       </div>
@@ -48,7 +48,7 @@ export default async function RepositoriesPage({
     : undefined;
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       <SectionHeading
         title="Repositories"
         description="Connect a source, index a branch, then inspect its structure. Indexing is the only step that fetches code; analysis never executes it."

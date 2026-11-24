@@ -4,7 +4,7 @@ import { Boxes, GitBranch, Info, Layers, Network, Share2 } from "lucide-react";
 import { ApiErrorNote, NotIndexedNotice } from "@/components/app/error-note";
 import { SystemGraph } from "@/components/graph/system-graph";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardHeader, SectionHeading, Stat } from "@/components/ui/card";
+import { Card, CardHeader, MetricBand, SectionHeading } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { getRepositoryBundle } from "@/lib/app-data";
 import { formatNumber } from "@/lib/format";
@@ -49,23 +49,29 @@ export default async function TwinPage({ params }: { params: Promise<{ id: strin
   const repository = twin.repository;
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       <SectionHeading
         title="Digital twin"
         description="A queryable, static projection of the repository graph. It models structure and declared relationships only; it is not a running simulation and it carries no runtime telemetry."
         action={<Badge>{repository.parser || "parser unknown"}</Badge>}
       />
 
-      <div className="grid grid-cols-2 gap-2.5 sm:gap-3 lg:grid-cols-4">
-        <Stat label="Nodes" value={formatNumber(twin.nodes)} hint={`${twin.kinds.length} node kinds`} />
-        <Stat label="Edges" value={formatNumber(twin.edges)} hint="Declared relationships" />
-        <Stat label="Average degree" value={averageDegree.toFixed(2)} hint="Edges counted from both ends" />
-        <Stat
-          label="Branch"
-          value={<span className="font-mono text-sm">{repository.branch || "default"}</span>}
-          hint={repository.full_name}
-        />
-      </div>
+      <MetricBand
+        items={[
+          { label: "Nodes", value: formatNumber(twin.nodes), hint: `${twin.kinds.length} node kinds` },
+          { label: "Edges", value: formatNumber(twin.edges), hint: "Declared relationships" },
+          {
+            label: "Average degree",
+            value: averageDegree.toFixed(2),
+            hint: "Edges counted from both ends",
+          },
+          {
+            label: "Branch",
+            value: <span className="font-mono text-sm">{repository.branch || "default"}</span>,
+            hint: repository.full_name,
+          },
+        ]}
+      />
 
       <Card>
         <CardHeader
@@ -79,14 +85,14 @@ export default async function TwinPage({ params }: { params: Promise<{ id: strin
           action={<Badge tone="accent">{formatNumber(twin.graph.nodes.length)} rendered</Badge>}
         />
         {twin.graph.truncated ? (
-          <p className="border-b border-warning/30 bg-warning/5 px-4 py-2 text-[0.75rem] text-warning">
+          <p className="border-b border-warning/30 bg-warning/5 px-5 py-2.5 text-[0.75rem] text-warning">
             Truncated view. Counts below describe the full indexed graph, not this sample.
           </p>
         ) : null}
         <div className="p-2">
           <SystemGraph graph={twin.graph} height={620} repositoryID={id} />
         </div>
-        <div className="flex flex-wrap items-center gap-2 border-t border-line px-4 py-3 text-[0.75rem] text-faint">
+        <div className="flex flex-wrap items-center gap-2 border-t border-line px-5 py-3 text-[0.75rem] text-faint">
           <span className="inline-flex items-center gap-1">
             <GitBranch className="h-3 w-3" aria-hidden="true" /> {repository.branch || "default branch"}
           </span>
@@ -103,7 +109,7 @@ export default async function TwinPage({ params }: { params: Promise<{ id: strin
         </div>
       </Card>
 
-      <div className="grid grid-cols-[minmax(0,1fr)] gap-4 lg:grid-cols-[1.3fr_1fr]">
+      <div className="grid grid-cols-[minmax(0,1fr)] gap-5 lg:grid-cols-[1.3fr_1fr]">
         <Card>
           <CardHeader
             title="Node kinds"
@@ -112,16 +118,16 @@ export default async function TwinPage({ params }: { params: Promise<{ id: strin
             action={<Badge>{formatNumber(totalKindNodes)} nodes</Badge>}
           />
           {twin.kinds.length === 0 ? (
-            <p className="px-4 py-8 text-center text-xs text-faint">No graph nodes have been indexed.</p>
+            <p className="px-5 py-10 text-center text-[0.875rem] text-faint">No graph nodes have been indexed.</p>
           ) : (
             <ul className="divide-y divide-line">
               {twin.kinds.map((kind) => {
                 const share = totalKindNodes > 0 ? (kind.count / totalKindNodes) * 100 : 0;
                 return (
-                  <li key={kind.kind} className="px-4 py-3">
+                  <li key={kind.kind} className="px-5 py-3.5">
                     <div className="flex items-center justify-between gap-3">
                       <span className="font-mono text-[0.8125rem] text-ink">{kind.kind}</span>
-                      <span className="shrink-0 font-mono text-[0.75rem] text-faint">
+                      <span className="tabular shrink-0 text-[0.75rem] text-faint">
                         {formatNumber(kind.count)} nodes · {formatNumber(kind.edges)} edges
                       </span>
                     </div>
@@ -136,20 +142,20 @@ export default async function TwinPage({ params }: { params: Promise<{ id: strin
           )}
         </Card>
 
-        <div className="space-y-4">
+        <div className="space-y-5">
           <Card>
             <CardHeader
               title="What this twin can answer"
               description="Deterministic questions, answered by traversal."
               icon={<Boxes className="h-4 w-4" aria-hidden="true" />}
             />
-            <ul className="space-y-2 px-4 py-4 text-[0.8125rem] leading-relaxed text-muted">
+            <ul className="space-y-2 px-5 py-4 text-[0.8125rem] leading-relaxed text-muted">
               <li>Which modules import a given file, directly and transitively?</li>
               <li>Which APIs and entities sit at the highest-connectivity nodes?</li>
               <li>Which files depend on a change, and how far does the blast radius reach?</li>
               <li>Which symbols or files have no inbound or outbound edges?</li>
             </ul>
-            <div className="border-t border-line px-4 py-3">
+            <div className="border-t border-line px-5 py-3">
               <Link href={`/app/repositories/${id}/impact`} className="text-[0.8125rem] text-accent hover:underline">
                 Run a change-impact query →
               </Link>
@@ -162,7 +168,7 @@ export default async function TwinPage({ params }: { params: Promise<{ id: strin
               description="Stated so the model is not over-read."
               icon={<Info className="h-4 w-4" aria-hidden="true" />}
             />
-            <ul className="space-y-2 px-4 py-4 text-[0.75rem] leading-relaxed text-muted">
+            <ul className="space-y-2 px-5 py-4 text-[0.75rem] leading-relaxed text-muted">
               <li>Edges come from static imports, symbol references and detected route wiring. Dynamic requires and runtime lookup are not resolved.</li>
               <li>The graph is relational (<span className="font-mono">graph_nodes</span> / <span className="font-mono">graph_edges</span>) with recursive traversal. An optional Neo4j adapter is not configured in this deployment.</li>
               <li>It describes one indexed branch at one commit. It does not observe live traffic, memory or deployment state.</li>
@@ -172,7 +178,7 @@ export default async function TwinPage({ params }: { params: Promise<{ id: strin
 
           <Card>
             <CardHeader title="Share" icon={<Share2 className="h-4 w-4" aria-hidden="true" />} />
-            <div className="px-4 py-4">
+            <div className="px-5 py-4">
               <p className="text-[0.75rem] leading-relaxed text-muted">
                 The twin is scoped to this repository and workspace. There is no public share link; access follows the
                 workspace membership check on every request.

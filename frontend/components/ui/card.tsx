@@ -42,7 +42,7 @@ export function CardHeader({
   return (
     <div
       className={cn(
-        "flex flex-wrap items-start justify-between gap-x-3 gap-y-2 border-b border-line px-4 py-3 sm:flex-nowrap",
+        "flex flex-wrap items-start justify-between gap-x-4 gap-y-2 border-b border-line px-5 py-4 sm:flex-nowrap",
         className,
       )}
     >
@@ -53,9 +53,9 @@ export function CardHeader({
           </div>
         ) : null}
         <div className="min-w-0">
-          <h2 className="truncate text-[0.9375rem] font-semibold tracking-[-0.01em] text-ink">{title}</h2>
+          <h2 className="truncate text-base font-semibold tracking-[-0.015em] text-ink">{title}</h2>
           {description ? (
-            <p className="mt-0.5 text-[0.8125rem] leading-relaxed text-muted">{description}</p>
+            <p className="mt-1 text-[0.8125rem] leading-relaxed text-muted">{description}</p>
           ) : null}
         </div>
       </div>
@@ -91,11 +91,11 @@ export function SectionHeading({
             {eyebrow}
           </p>
         ) : null}
-        <h1 className="font-display text-[1.75rem] font-semibold tracking-[-0.03em] text-ink text-balance sm:text-[2rem]">
+        <h1 className="font-display text-[1.875rem] font-semibold tracking-[-0.035em] text-ink text-balance sm:text-[2.125rem]">
           {title}
         </h1>
         {description ? (
-          <p className="mt-2 max-w-3xl text-[0.9375rem] leading-relaxed text-muted">{description}</p>
+          <p className="mt-2.5 max-w-2xl text-[0.9375rem] leading-relaxed text-muted">{description}</p>
         ) : null}
       </div>
       {action ? <div className="shrink-0 pb-0.5">{action}</div> : null}
@@ -181,6 +181,50 @@ export function Stat({
         {value}
       </p>
       {hint ? <p className="mt-1.5 text-[0.75rem] leading-snug text-muted">{hint}</p> : null}
+    </div>
+  );
+}
+
+export function MetricBand({
+  items,
+  className,
+}: {
+  items: { label: string; value: ReactNode; hint?: ReactNode; tone?: "default" | "danger" | "warning" | "success" }[];
+  className?: string;
+}) {
+  return (
+    <div
+      className={cn(
+        "grid grid-cols-2 gap-px overflow-hidden rounded-card border border-line bg-line shadow-card lg:grid-cols-4",
+        className,
+      )}
+    >
+      {items.map((item) => {
+        const toneClass =
+          item.tone === "danger"
+            ? "text-danger"
+            : item.tone === "warning"
+              ? "text-warning"
+              : item.tone === "success"
+                ? "text-success"
+                : "text-ink";
+        return (
+          <div key={item.label} className="min-w-0 bg-surface px-5 py-4">
+            <p className="text-[0.75rem] font-medium text-muted">{item.label}</p>
+            <p
+              className={cn(
+                "tabular mt-2 font-display text-[1.75rem] font-semibold leading-none tracking-[-0.03em]",
+                toneClass,
+              )}
+            >
+              {item.value}
+            </p>
+            {item.hint ? (
+              <p className="mt-1.5 text-[0.75rem] leading-snug text-faint">{item.hint}</p>
+            ) : null}
+          </div>
+        );
+      })}
     </div>
   );
 }

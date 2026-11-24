@@ -93,7 +93,7 @@ export function RepoHeader({
   }
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-4">
       <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
         <div className="min-w-0">
           <Link
@@ -108,7 +108,7 @@ export function RepoHeader({
           </Link>
 
           <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-2">
-            <h1 className="min-w-0 truncate font-display text-[1.5rem] font-semibold leading-tight tracking-[-0.03em] text-ink sm:text-[1.75rem]">
+            <h1 className="min-w-0 truncate font-display text-[1.75rem] font-semibold leading-tight tracking-[-0.035em] text-ink sm:text-[2rem]">
               {repository.full_name}
             </h1>
             <StatusBadge status={repository.status} />

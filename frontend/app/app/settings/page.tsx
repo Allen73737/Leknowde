@@ -15,7 +15,7 @@ export default async function SettingsPage() {
   if (!me.data) {
     if (me.error.status === 401) redirect("/login");
     return (
-      <div className="space-y-4">
+      <div className="space-y-6">
         <SectionHeading title="Settings" />
         <ApiErrorNote error={me.error} retryHref="/app/settings" />
       </div>
@@ -23,7 +23,7 @@ export default async function SettingsPage() {
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       <SectionHeading
         title="Settings"
         description="Profile, stored preferences, password recovery and account deletion. Changes take effect immediately and are written to the audit log."

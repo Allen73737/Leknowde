@@ -3,7 +3,7 @@ import { ArrowRight, Clock, FileCode2, GitCommitHorizontal, Info, Server, Shield
 
 import { ApiErrorNote, NotIndexedNotice } from "@/components/app/error-note";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardHeader, Stat } from "@/components/ui/card";
+import { Card, CardHeader, MetricBand } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { getRepositoryBundle } from "@/lib/app-data";
 import { formatDate, formatDateTime, formatNumber, languageColor } from "@/lib/format";
@@ -42,32 +42,34 @@ export default async function RepositoryOverviewPage({ params }: { params: Promi
   const fanIn = (dependencies.data?.summary.top_files ?? []).filter((file) => file.in_degree > 0).slice(0, 5);
 
   return (
-    <div className="space-y-4">
-      <div className="grid grid-cols-2 gap-2.5 sm:gap-3 lg:grid-cols-4">
-        <Stat
-          label="Files"
-          value={formatNumber(stats.files)}
-          hint={`${formatNumber(stats.lines)} source lines on ${branch}`}
-        />
-        <Stat
-          label="Symbols"
-          value={formatNumber(stats.symbols)}
-          hint={`${formatNumber(stats.functions)} functions · ${formatNumber(stats.classes)} classes`}
-        />
-        <Stat
-          label="Graph"
-          value={formatNumber(stats.edges)}
-          hint={`${formatNumber(stats.nodes)} nodes · ${formatNumber(stats.chunks)} evidence chunks`}
-        />
-        <Stat
-          label="Health"
-          value={summary ? `${summary.score}/100` : "—"}
-          hint={summary ? `${summary.findings} findings · grade ${summary.grade}` : "Health analysis unavailable"}
-          tone={summary && summary.score < 60 ? "warning" : summary && summary.score < 80 ? "warning" : "default"}
-        />
-      </div>
+    <div className="space-y-6">
+      <MetricBand
+        items={[
+          {
+            label: "Files",
+            value: formatNumber(stats.files),
+            hint: `${formatNumber(stats.lines)} source lines on ${branch}`,
+          },
+          {
+            label: "Symbols",
+            value: formatNumber(stats.symbols),
+            hint: `${formatNumber(stats.functions)} functions · ${formatNumber(stats.classes)} classes`,
+          },
+          {
+            label: "Graph",
+            value: formatNumber(stats.edges),
+            hint: `${formatNumber(stats.nodes)} nodes · ${formatNumber(stats.chunks)} evidence chunks`,
+          },
+          {
+            label: "Health",
+            value: summary ? `${summary.score}/100` : "—",
+            hint: summary ? `${summary.findings} findings · grade ${summary.grade}` : "Health analysis unavailable",
+            tone: summary && summary.score < 80 ? "warning" : "default",
+          },
+        ]}
+      />
 
-      <div className="grid items-stretch gap-4 lg:grid-cols-3">
+      <div className="grid items-stretch gap-5 lg:grid-cols-3">
         <Card className="flex flex-col">
           <CardHeader
             title="Composition"
@@ -75,7 +77,7 @@ export default async function RepositoryOverviewPage({ params }: { params: Promi
             icon={<FileCode2 className="h-4 w-4" aria-hidden="true" />}
             action={<Badge>{branch}</Badge>}
           />
-          <div className="space-y-3 px-4 py-3.5">
+          <div className="space-y-3 px-5 py-4">
             {languages.length === 0 ? (
               <p className="text-[0.875rem] text-faint">No language metadata was recorded.</p>
             ) : (
@@ -90,7 +92,7 @@ export default async function RepositoryOverviewPage({ params }: { params: Promi
                       />
                       <span className="truncate">{language}</span>
                     </span>
-                    <span className="tabular shrink-0 font-mono text-[0.75rem] text-faint">{count}</span>
+                    <span className="tabular shrink-0 text-[0.75rem] text-faint">{count}</span>
                   </div>
                   <div className="h-1.5 overflow-hidden rounded-full bg-raised">
                     <div
@@ -103,7 +105,7 @@ export default async function RepositoryOverviewPage({ params }: { params: Promi
             )}
           </div>
           {fanIn.length > 0 ? (
-            <div className="mt-auto border-t border-line px-4 py-3">
+            <div className="mt-auto border-t border-line px-5 py-3">
               <p className="text-[0.75rem] font-medium text-faint">
                 Most imported files
               </p>
@@ -116,7 +118,7 @@ export default async function RepositoryOverviewPage({ params }: { params: Promi
                     >
                       {file.path}
                     </Link>
-                    <span className="tabular shrink-0 font-mono text-[0.75rem] text-faint">{file.in_degree}</span>
+                    <span className="tabular shrink-0 text-[0.75rem] text-faint">{file.in_degree}</span>
                   </li>
                 ))}
               </ul>
@@ -132,7 +134,7 @@ export default async function RepositoryOverviewPage({ params }: { params: Promi
             action={<Badge>{stats.apis}</Badge>}
           />
           {endpoints.length === 0 ? (
-            <p className="px-4 py-10 text-center text-[0.875rem] text-faint">
+            <p className="px-5 py-10 text-center text-[0.875rem] text-faint">
               No HTTP endpoints were detected. This may be a library rather than a service.
             </p>
           ) : (
@@ -140,14 +142,14 @@ export default async function RepositoryOverviewPage({ params }: { params: Promi
               {endpoints.map((endpoint) => (
                 <li
                   key={endpoint}
-                  className="break-all px-4 py-2 font-mono text-[0.75rem] leading-relaxed text-muted transition-colors hover:bg-raised/30"
+                  className="break-all px-5 py-2 font-mono text-[0.75rem] leading-relaxed text-muted transition-colors hover:bg-raised/30"
                 >
                   {endpoint}
                 </li>
               ))}
             </ul>
           )}
-          <p className="mt-auto border-t border-line px-4 py-2.5 text-[0.75rem] leading-relaxed text-faint">
+          <p className="mt-auto border-t border-line px-5 py-2.5 text-[0.75rem] leading-relaxed text-faint">
             Resolved from declarations and client call sites. No traffic, latency or runtime behaviour is
             inferred.
           </p>
@@ -162,7 +164,7 @@ export default async function RepositoryOverviewPage({ params }: { params: Promi
           />
           {summary ? (
             <>
-              <div className="px-4 py-3.5">
+              <div className="px-5 py-4">
                 <Progress
                   value={summary.score}
                   tone={summary.score < 60 ? "danger" : summary.score < 80 ? "warning" : "success"}
@@ -186,8 +188,8 @@ export default async function RepositoryOverviewPage({ params }: { params: Promi
                   <p className="mt-3 text-[0.8125rem] text-faint">No deductions were recorded.</p>
                 )}
               </div>
-              <div className="mt-auto border-t border-line px-4 py-2.5">
-                <p className="flex items-center gap-1.5 font-mono text-[0.75rem] text-faint">
+              <div className="mt-auto border-t border-line px-5 py-3">
+                <p className="flex items-center gap-1.5 text-[0.75rem] text-faint">
                   <Clock className="h-3 w-3 shrink-0" aria-hidden="true" />
                   <span className="truncate">
                     {repository.last_indexed_at ? formatDateTime(repository.last_indexed_at) : "never indexed"}
@@ -203,7 +205,7 @@ export default async function RepositoryOverviewPage({ params }: { params: Promi
               </div>
             </>
           ) : (
-            <p className="px-4 py-10 text-center text-[0.875rem] text-faint">
+            <p className="px-5 py-10 text-center text-[0.875rem] text-faint">
               Health analysis is unavailable for this repository.
             </p>
           )}
@@ -221,32 +223,29 @@ export default async function RepositoryOverviewPage({ params }: { params: Promi
           icon={<GitCommitHorizontal className="h-4 w-4" aria-hidden="true" />}
         />
         {commits.length === 0 ? (
-          <p className="px-4 py-10 text-center text-[0.875rem] text-faint">No commits were recorded.</p>
+          <p className="px-5 py-10 text-center text-[0.875rem] text-faint">No commits were recorded.</p>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full min-w-[560px] border-collapse text-left">
-              <tbody className="divide-y divide-line">
-                {commits.slice(0, 8).map((commit) => (
-                  <tr key={commit.sha} className="transition-colors hover:bg-raised/30">
-                    <td className="w-24 px-4 py-2">
-                      <span className="font-mono text-[0.75rem] text-faint">{commit.sha.slice(0, 8)}</span>
-                    </td>
-                    <td className="px-4 py-2">
-                      <span className="block truncate text-[0.875rem] text-ink">{commit.message}</span>
-                    </td>
-                    <td className="w-40 px-4 py-2">
-                      <span className="block truncate text-[0.8125rem] text-muted">{commit.author_name}</span>
-                    </td>
-                    <td className="w-32 px-4 py-2 text-right">
-                      <span className="font-mono text-[0.75rem] text-faint">
-                        {formatDate(commit.committed_at)}
-                      </span>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+          <ul className="divide-y divide-line">
+            {commits.slice(0, 8).map((commit) => (
+              <li
+                key={commit.sha}
+                className="grid gap-1.5 px-5 py-3.5 transition-colors duration-150 hover:bg-raised/30 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center sm:gap-4"
+              >
+                <div className="flex min-w-0 items-baseline gap-2.5">
+                  <span className="shrink-0 font-mono text-[0.75rem] text-faint">
+                    {commit.sha.slice(0, 8)}
+                  </span>
+                  <span className="truncate text-[0.875rem] text-ink">{commit.message}</span>
+                </div>
+                <div className="flex items-center justify-between gap-4 sm:justify-end">
+                  <span className="truncate text-[0.8125rem] text-muted">{commit.author_name}</span>
+                  <span className="tabular shrink-0 text-[0.75rem] text-faint">
+                    {formatDate(commit.committed_at)}
+                  </span>
+                </div>
+              </li>
+            ))}
+          </ul>
         )}
       </Card>
 

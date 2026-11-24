@@ -21,7 +21,7 @@ export default async function ImpactPage({ params }: { params: Promise<{ id: str
   const reports = await safeGet<ImpactListResponse>(`/repositories/${id}/impact`);
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       <SectionHeading
         title="Change impact"
         description="What a change touches, what tests exist, and how much risk the static evidence supports — with every factor exposed."

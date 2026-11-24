@@ -31,7 +31,7 @@ export default async function AssistantPage({
   const suggestions = onboarding.data?.questions_to_ask_the_codebase ?? [];
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       <SectionHeading
         title="Repository assistant"
         description="Answers are assembled from retrieved evidence. The model is optional; the citations are not. Prompt-injection text in repository files is treated as data, not instructions."

@@ -80,7 +80,7 @@ export function AuditTable({ logs }: { logs: AuditLog[] }) {
             </option>
           ))}
         </Select>
-        <span className="shrink-0 font-mono text-[0.75rem] text-faint">
+        <span className="shrink-0 tabular text-[0.75rem] text-faint">
           {filtered.length}/{logs.length}
         </span>
       </div>
@@ -95,59 +95,57 @@ export function AuditTable({ logs }: { logs: AuditLog[] }) {
         </div>
       ) : (
         <div className="overflow-hidden rounded-card border border-line bg-surface">
-          <div className="overflow-x-auto">
-            <table className="w-full min-w-[680px] border-collapse text-left">
-              <thead>
-                <tr className="border-b border-line bg-shell/60">
-                  {["Action", "Actor", "Target", "IP", "When"].map((heading) => (
-                    <th
-                      key={heading}
-                      className="px-4 py-3 text-[0.75rem] font-medium text-faint"
-                    >
-                      {heading}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-line">
-                {filtered.map((log) => {
-                  const metadata = prettyMetadata(log.metadata);
-                  return (
-                    <tr key={log.id} className="align-top transition-colors duration-150 hover:bg-raised/40">
-                      <td className="px-4 py-3.5">
+          <ul className="divide-y divide-line">
+            {filtered.map((log) => {
+              const metadata = prettyMetadata(log.metadata);
+              return (
+                <li
+                  key={log.id}
+                  className="px-5 py-4 transition-colors duration-150 hover:bg-raised/30"
+                >
+                  <div className="flex flex-col gap-2.5 sm:flex-row sm:items-start sm:justify-between">
+                    <div className="min-w-0 flex-1">
+                      <div className="flex flex-wrap items-center gap-2">
                         <Badge tone={actionTone(log.action)}>{log.action}</Badge>
-                      </td>
-                      <td className="px-4 py-3.5">
-                        <span className="block max-w-[220px] truncate font-mono text-[0.8125rem] text-ink">
+                        <span className="truncate text-[0.8125rem] text-ink">
                           {log.actor_email || "system"}
                         </span>
-                      </td>
-                      <td className="px-4 py-3.5">
-                        <span className="block font-mono text-[0.8125rem] text-muted">{log.target_type || "—"}</span>
-                        <span className="mt-1 block max-w-[240px] truncate font-mono text-[0.75rem] text-faint">
-                          {log.target_id || "—"}
-                        </span>
-                        {metadata !== "—" ? (
-                          <details className="mt-1">
-                            <summary className="cursor-pointer text-[0.8125rem] font-medium text-accent hover:underline">metadata</summary>
-                            <pre className="mt-1 max-w-[280px] overflow-x-auto rounded border border-line bg-canvas p-1.5 font-mono text-[0.75rem] leading-relaxed text-muted">
-                              {metadata}
-                            </pre>
-                          </details>
+                      </div>
+                      <p className="mt-1.5 text-[0.75rem] text-faint">
+                        {log.target_type || "unknown target"}
+                        {log.target_id ? (
+                          <>
+                            {" · "}
+                            <span className="font-mono">{log.target_id}</span>
+                          </>
                         ) : null}
-                      </td>
-                      <td className="px-4 py-3.5 font-mono text-[0.8125rem] text-faint">{log.ip || "—"}</td>
-                      <td className="whitespace-nowrap px-4 py-3.5 font-mono text-[0.8125rem] text-faint">
+                      </p>
+                      {metadata !== "—" ? (
+                        <details className="mt-2">
+                          <summary className="cursor-pointer text-[0.8125rem] font-medium text-accent hover:underline">
+                            Metadata
+                          </summary>
+                          <pre className="mt-1.5 max-w-xl overflow-x-auto rounded-md border border-line bg-canvas p-2.5 font-mono text-[0.75rem] leading-relaxed text-muted">
+                            {metadata}
+                          </pre>
+                        </details>
+                      ) : null}
+                    </div>
+                    <div className="shrink-0 sm:text-right">
+                      <p className="tabular text-[0.8125rem] text-muted">
                         {formatDateTime(log.created_at)}
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
+                      </p>
+                      <p className="mt-0.5 font-mono text-[0.75rem] text-faint">{log.ip || "no client IP"}</p>
+                    </div>
+                  </div>
+                </li>
+              );
+            })}
+          </ul>
           {filtered.length === 0 ? (
-            <p className="px-4 py-10 text-center text-[0.875rem] text-faint">No events match this filter.</p>
+            <p className="px-5 py-12 text-center text-[0.875rem] text-faint">
+              No events match this filter.
+            </p>
           ) : null}
         </div>
       )}

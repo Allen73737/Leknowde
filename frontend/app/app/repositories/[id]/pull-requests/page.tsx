@@ -18,7 +18,7 @@ export default async function PullRequestsPage({ params }: { params: Promise<{ i
   const result = await safeGet<PullRequestsResponse>(`/repositories/${id}/pull-requests?state=open`);
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       <SectionHeading
         title="Pull requests"
         description="Analyse a diff against the indexed graph: blast radius, missing tests and a transparent risk score. Diff text is untrusted data and is never executed."

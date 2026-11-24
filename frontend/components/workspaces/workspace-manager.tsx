@@ -13,6 +13,7 @@ import {
   Trash2,
   UserPlus,
   Users,
+  X,
 } from "lucide-react";
 
 import { DemoConnectButton } from "@/components/repo/demo-connect-button";
@@ -35,6 +36,7 @@ export interface WorkspaceBundle {
 export function WorkspaceManager({ initial }: { initial: WorkspaceBundle[] }) {
   const router = useRouter();
   const [creating, setCreating] = useState(false);
+  const [showCreate, setShowCreate] = useState(initial.length === 0);
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [error, setError] = useState("");
@@ -60,50 +62,69 @@ export function WorkspaceManager({ initial }: { initial: WorkspaceBundle[] }) {
 
   return (
     <div className="space-y-5">
-      <Card>
-        <form onSubmit={createWorkspace} className="p-5 sm:p-6">
-          <div className="flex items-center gap-2.5">
-            <span className="flex h-8 w-8 items-center justify-center rounded-lg border border-line bg-shell text-accent">
-              <Plus className="h-4 w-4" aria-hidden="true" />
-            </span>
-            <h2 className="font-display text-lg font-semibold tracking-[-0.01em] text-ink">
-              Create a workspace
-            </h2>
-          </div>
-          <p className="mt-2 max-w-2xl text-[0.9375rem] leading-relaxed text-muted">
-            Workspaces isolate repositories and members. Repository access is checked against membership on every
-            request, including graph and chat endpoints.
-          </p>
-          <div className="mt-5 grid gap-3 sm:grid-cols-[1fr_1.4fr]">
-            <Field label="Name" htmlFor="workspace-name">
-              <Input
-                id="workspace-name"
-                value={name}
-                onChange={(event) => setName(event.target.value)}
-                placeholder="Platform engineering"
-                required
-                maxLength={80}
-              />
-            </Field>
-            <Field label="Description" htmlFor="workspace-description" hint="Optional. Describe the system boundary.">
-              <Input
-                id="workspace-description"
-                value={description}
-                onChange={(event) => setDescription(event.target.value)}
-                placeholder="Services powering the customer console"
-                maxLength={240}
-              />
-            </Field>
-          </div>
-          <div className="mt-4 flex flex-wrap items-center justify-end gap-3">
-            <Button type="submit" loading={creating} disabled={!name.trim()}>
-              Create workspace
-            </Button>
-          </div>
-          {error ? <p className="mt-3 text-[0.8125rem] text-danger">{error}</p> : null}
-          {notice ? <p className="mt-3 text-[0.8125rem] text-success">{notice}</p> : null}
-        </form>
-      </Card>
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <p className="text-[0.8125rem] text-muted">
+          {initial.length === 0
+            ? "No workspaces yet."
+            : `${plural(initial.length, "workspace")} in this organization.`}
+        </p>
+        <Button
+          type="button"
+          size="sm"
+          variant={showCreate ? "ghost" : "secondary"}
+          onClick={() => setShowCreate((value) => !value)}
+        >
+          {showCreate ? <X className="h-3.5 w-3.5" aria-hidden="true" /> : <Plus className="h-3.5 w-3.5" aria-hidden="true" />}
+          {showCreate ? "Close" : "New workspace"}
+        </Button>
+      </div>
+
+      {showCreate ? (
+        <Card>
+          <form onSubmit={createWorkspace} className="p-5 sm:p-6">
+            <div className="flex items-center gap-2.5">
+              <span className="flex h-8 w-8 items-center justify-center rounded-lg border border-line bg-shell text-accent">
+                <Plus className="h-4 w-4" aria-hidden="true" />
+              </span>
+              <h2 className="font-display text-lg font-semibold tracking-[-0.01em] text-ink">
+                Create a workspace
+              </h2>
+            </div>
+            <p className="mt-2 max-w-2xl text-[0.9375rem] leading-relaxed text-muted">
+              Workspaces isolate repositories and members. Repository access is checked against membership on every
+              request, including graph and chat endpoints.
+            </p>
+            <div className="mt-5 grid gap-3 sm:grid-cols-[1fr_1.4fr]">
+              <Field label="Name" htmlFor="workspace-name">
+                <Input
+                  id="workspace-name"
+                  value={name}
+                  onChange={(event) => setName(event.target.value)}
+                  placeholder="Platform engineering"
+                  required
+                  maxLength={80}
+                />
+              </Field>
+              <Field label="Description" htmlFor="workspace-description" hint="Optional. Describe the system boundary.">
+                <Input
+                  id="workspace-description"
+                  value={description}
+                  onChange={(event) => setDescription(event.target.value)}
+                  placeholder="Services powering the customer console"
+                  maxLength={240}
+                />
+              </Field>
+            </div>
+            <div className="mt-4 flex flex-wrap items-center justify-end gap-3">
+              <Button type="submit" loading={creating} disabled={!name.trim()}>
+                Create workspace
+              </Button>
+            </div>
+            {error ? <p className="mt-3 text-[0.8125rem] text-danger">{error}</p> : null}
+            {notice ? <p className="mt-3 text-[0.8125rem] text-success">{notice}</p> : null}
+          </form>
+        </Card>
+      ) : null}
 
       {initial.length === 0 ? (
         <Card className="px-5 py-14 text-center">
@@ -210,7 +231,7 @@ function WorkspaceCard({ bundle }: { bundle: WorkspaceBundle }) {
           <p className="mt-1.5 max-w-2xl text-[0.9375rem] leading-relaxed text-muted">
             {workspace.description || "No description provided."}
           </p>
-          <p className="mt-2 font-mono text-[0.75rem] text-faint">
+          <p className="mt-2 text-[0.75rem] text-faint">
             {plural(workspace.repository_count, "repository", "repositories")} ·{" "}
             {plural(workspace.member_count, "member")} · created {formatDate(workspace.created_at)}
           </p>

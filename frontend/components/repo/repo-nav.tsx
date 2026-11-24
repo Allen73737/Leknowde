@@ -11,12 +11,12 @@ import { cn } from "@/lib/format";
 import { repoNav } from "@/lib/nav";
 
 /**
- * RepoNav — one hairline tab strip.
+ * RepoNav — one quiet hairline tab strip.
  *
- * Twelve sections cannot wrap into two rows without looking like a settings
+ * Thirteen sections cannot wrap into two rows without looking like a settings
  * form, so the strip scrolls horizontally, keeps the active tab in view and
- * exposes explicit arrows at the edges that actually overflow. The active
- * marker is a single 2px accent rule that slides between tabs.
+ * exposes explicit arrows at the edges that actually overflow. Labels carry the
+ * hierarchy; a single 2px accent rule marks the active section.
  */
 export function RepoNav({ repositoryID }: { repositoryID: string }) {
   const pathname = usePathname();
@@ -70,71 +70,62 @@ export function RepoNav({ repositoryID }: { repositoryID: string }) {
 
   return (
     <nav aria-label="Repository sections" className="relative border-b border-line">
-      <div
-        ref={scroller}
-        onScroll={measure}
-        className="no-scrollbar -mb-px flex items-stretch gap-0.5 overflow-x-auto px-0.5"
-      >
-        {repoNav.map((item) => {
-          const href = item.segment ? `${base}/${item.segment}` : base;
-          const active = href === activeHref;
-          return (
-            <Link
-              key={item.segment || "overview"}
-              href={href}
-              title={item.description}
-              aria-current={active ? "page" : undefined}
-              className={cn(
-                "group relative flex shrink-0 items-center gap-1.5 rounded-t-md px-2.5 pb-3 pt-2 text-[0.8125rem] font-medium transition-colors duration-200",
-                active ? "text-ink" : "text-muted hover:text-ink",
-              )}
-            >
-              <item.icon
+      <div className="relative px-8">
+        <div
+          ref={scroller}
+          onScroll={measure}
+          className="no-scrollbar -mb-px flex snap-x snap-mandatory items-stretch gap-0.5 overflow-x-auto"
+        >
+          {repoNav.map((item) => {
+            const href = item.segment ? `${base}/${item.segment}` : base;
+            const active = href === activeHref;
+            return (
+              <Link
+                key={item.segment || "overview"}
+                href={href}
+                title={item.description}
+                aria-current={active ? "page" : undefined}
                 className={cn(
-                  "h-4 w-4 shrink-0 transition-colors duration-200",
-                  active ? "text-accent" : "text-faint group-hover:text-muted",
+                  "group relative flex shrink-0 snap-start items-center rounded-t-md px-3 pb-3 pt-2 text-[0.8125rem] font-medium transition-colors duration-200",
+                  active ? "text-ink" : "text-muted hover:text-ink",
                 )}
-                aria-hidden="true"
-              />
-              <span className="whitespace-nowrap">{item.label}</span>
-              {active ? (
-                <motion.span
-                  layoutId={reduce ? undefined : "repo-nav-underline"}
-                  transition={{ type: "spring", stiffness: 520, damping: 44 }}
-                  className="absolute inset-x-2 -bottom-px h-[2px] rounded-full bg-accent"
-                  aria-hidden="true"
-                />
-              ) : null}
-            </Link>
-          );
-        })}
-      </div>
+              >
+                <span className="whitespace-nowrap">{item.label}</span>
+                {active ? (
+                  <motion.span
+                    layoutId={reduce ? undefined : "repo-nav-underline"}
+                    transition={{ type: "spring", stiffness: 520, damping: 44 }}
+                    className="absolute inset-x-2 -bottom-px h-[2px] rounded-full bg-accent"
+                    aria-hidden="true"
+                  />
+                ) : null}
+              </Link>
+            );
+          })}
+        </div>
 
-      {edges.left ? (
-        <div className="absolute inset-y-0 left-0 flex items-center bg-canvas pr-2">
+        {edges.left ? (
           <button
             type="button"
             onClick={() => nudge(-1)}
             aria-label="Scroll sections left"
-            className="press grid h-7 w-7 place-items-center rounded-full border border-line bg-surface text-muted shadow-card transition-colors duration-200 hover:border-line-strong hover:text-ink"
+            className="press absolute left-0 top-1/2 grid h-7 w-7 -translate-y-1/2 place-items-center rounded-full border border-line bg-surface text-muted shadow-card transition-colors duration-200 hover:border-line-strong hover:text-ink"
           >
             <ChevronLeft className="h-3.5 w-3.5" aria-hidden="true" />
           </button>
-        </div>
-      ) : null}
+        ) : null}
 
-      {edges.right ? (
-        <div className="absolute inset-y-0 right-0 flex items-center bg-canvas pl-2">
+        {edges.right ? (
           <button
             type="button"
             onClick={() => nudge(1)}
             aria-label="Scroll sections right"
-            className="press grid h-7 w-7 place-items-center rounded-full border border-line bg-surface text-muted shadow-card transition-colors duration-200 hover:border-line-strong hover:text-ink"
+            className="press absolute right-0 top-1/2 grid h-7 w-7 -translate-y-1/2 place-items-center rounded-full border border-line bg-surface text-muted shadow-card transition-colors duration-200 hover:border-line-strong hover:text-ink"
           >
             <ChevronRight className="h-3.5 w-3.5" aria-hidden="true" />
           </button>
-        </div>
-      ) : null}
+        ) : null}
+      </div>
     </nav>
   );
 }

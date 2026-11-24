@@ -24,7 +24,7 @@ export default async function ReadmePage({ params }: { params: Promise<{ id: str
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       <SectionHeading
         title="README and About"
         description="A publishable README and GitHub About panel generated from the index: languages, manifests, endpoints, entities and structure. Facts are computed; the draft is never copied from a live provider."

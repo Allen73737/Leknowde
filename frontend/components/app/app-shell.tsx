@@ -18,9 +18,9 @@ import type { LucideIcon } from "lucide-react";
 
 import { Logo } from "@/components/brand/logo";
 import { ThemeToggle } from "@/components/theme-toggle";
-import { CommandPalette, PaletteHint } from "@/components/app/command-palette";
+import { CommandPalette } from "@/components/app/command-palette";
 import { UserMenu } from "@/components/app/user-menu";
-import { accountNav, workspaceNav } from "@/lib/nav";
+import { accountNav, primaryNav } from "@/lib/nav";
 import { cn, initials, plural } from "@/lib/format";
 import type { MeResponse, Workspace } from "@/lib/types";
 
@@ -124,7 +124,7 @@ function NavLink({
         <span className="truncate">{label}</span>
       </span>
       {badge && badge > 0 ? (
-        <span className="relative shrink-0 rounded-md border border-accent/40 bg-accent/10 px-1.5 py-0.5 font-mono text-[0.75rem] font-medium text-accent">
+        <span className="relative shrink-0 rounded-md border border-accent/40 bg-accent/10 px-1.5 py-0.5 tabular text-[0.75rem] font-medium text-accent">
           {badge}
         </span>
       ) : null}
@@ -152,6 +152,21 @@ function SidebarBody({
   layoutPrefix: string;
 }) {
   const org = "name" in me.organization ? me.organization.name : "Organization";
+  const workspaceCount = workspaces.length;
+  const repositoryCount = workspaces.reduce((total, workspace) => total + workspace.repository_count, 0);
+  const workspaceLabel =
+    workspaceCount === 0
+      ? "No workspace"
+      : workspaceCount === 1
+        ? workspaces[0]?.name ?? "Workspace"
+        : "All workspaces";
+  const workspaceMeta =
+    workspaceCount === 0
+      ? "Create one to begin"
+      : workspaceCount === 1
+        ? plural(repositoryCount, "repository", "repositories")
+        : `${plural(repositoryCount, "repository", "repositories")} · ${plural(workspaceCount, "workspace")}`;
+  const orgLooksLikeEmail = org.includes("@");
 
   return (
     <div className="flex h-full flex-col border-r border-line bg-shell">
@@ -179,21 +194,17 @@ function SidebarBody({
         <Link
           href="/app/workspaces"
           onClick={onNavigate}
-          title={org}
-          className="group flex items-center gap-2.5 rounded-lg border border-line bg-canvas px-3 py-2 transition-colors duration-200 hover:border-line-strong"
+          title={orgLooksLikeEmail ? workspaceLabel : org}
+          className="group flex items-center gap-3 rounded-xl border border-line bg-canvas px-3 py-2.5 transition-colors duration-200 hover:border-line-strong"
         >
-          <span className="grid h-7 w-7 shrink-0 place-items-center rounded-md border border-line bg-raised font-mono text-[0.75rem] font-semibold text-accent">
-            {initials(org)}
+          <span className="grid h-8 w-8 shrink-0 place-items-center rounded-lg border border-line bg-raised text-[0.75rem] font-semibold text-accent">
+            {initials(workspaceLabel)}
           </span>
           <span className="min-w-0 flex-1">
-            <span className="block truncate text-[0.8125rem] font-medium leading-tight text-ink">
-              {org}
+            <span className="block truncate text-[0.875rem] font-medium leading-tight text-ink">
+              {workspaceLabel}
             </span>
-            <span className="mt-0.5 block truncate font-mono text-[0.75rem] text-faint">
-              {workspaces.length === 0
-                ? "No workspaces"
-                : plural(workspaces.length, "workspace")}
-            </span>
+            <span className="mt-0.5 block truncate text-[0.75rem] text-faint">{workspaceMeta}</span>
           </span>
           <ChevronRight
             className="h-3.5 w-3.5 shrink-0 text-faint transition-transform duration-200 group-hover:translate-x-0.5"
@@ -204,7 +215,7 @@ function SidebarBody({
 
       <nav className="flex-1 overflow-y-auto px-2.5 pb-4 pt-2" aria-label="Main">
         <div className="space-y-0.5">
-          {workspaceNav.map((item) => {
+          {primaryNav.map((item) => {
             const active =
               item.href === "/app" ? pathname === "/app" : pathname.startsWith(item.href);
             return (
@@ -244,7 +255,7 @@ function SidebarBody({
                 className="group flex items-center justify-between gap-2 rounded-lg px-3 py-1.5 text-[0.8125rem] text-muted transition-colors duration-200 hover:bg-raised/60 hover:text-ink"
               >
                 <span className="truncate">{workspace.name}</span>
-                <span className="shrink-0 font-mono text-[0.75rem] text-faint">
+                <span className="shrink-0 tabular text-[0.75rem] text-faint">
                   {workspace.repository_count}
                 </span>
               </Link>
@@ -257,14 +268,14 @@ function SidebarBody({
                 onClick={onNavigate}
                 className="flex items-center justify-between gap-2 rounded-lg px-3 py-1.5 text-[0.8125rem] text-faint transition-colors duration-200 hover:bg-raised/60 hover:text-ink"
               >
-                All workspaces
+                Manage workspaces
                 <ChevronRight className="h-3.5 w-3.5" aria-hidden="true" />
               </Link>
             )}
           </div>
         </div>
 
-        <div className="mt-6">
+        <div className="mt-5 border-t border-line pt-4">
           <p className="px-3 text-[0.75rem] font-medium text-faint">
             Account
           </p>
@@ -415,7 +426,7 @@ export function AppShell({
             scrolled ? "border-line shadow-[0_10px_30px_-24px_rgba(0,0,0,0.55)]" : "border-line/70",
           )}
         >
-          <div className="flex h-14 items-center justify-between gap-3 px-4 sm:px-6 xl:px-8">
+          <div className="flex h-16 items-center justify-between gap-3 px-5 sm:px-7 xl:px-10">
             <div className="flex min-w-0 items-center gap-2.5">
               <button
                 type="button"
@@ -428,7 +439,6 @@ export function AppShell({
               <Breadcrumbs pathname={pathname} />
             </div>
             <div className="flex items-center gap-1.5">
-              <PaletteHint onClick={() => setPaletteOpen(true)} />
               <button
                 type="button"
                 onClick={() => setPaletteOpen(true)}
@@ -454,7 +464,7 @@ export function AppShell({
           </div>
         </header>
 
-        <main id="main" className="w-full px-4 py-6 sm:px-6 lg:py-7 xl:px-8">
+        <main id="main" className="w-full px-5 py-7 sm:px-7 lg:py-9 xl:px-10">
           {children}
         </main>
       </div>
