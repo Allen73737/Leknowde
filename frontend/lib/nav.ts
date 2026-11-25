@@ -8,13 +8,16 @@ import {
   Compass,
   FileCode2,
   FileText,
+  GitBranch,
   GitPullRequest,
+  Layers,
   LayoutDashboard,
   MessageSquare,
   Network,
   Radar,
   Settings,
   ShieldCheck,
+  Terminal,
   Workflow,
 } from "lucide-react";
 
@@ -37,6 +40,10 @@ export const repoNav: RepoNavItem[] = [
   { label: "README", segment: "readme", icon: FileText, description: "README and GitHub About metadata" },
   { label: "Health", segment: "health", icon: Activity, description: "Findings, complexity and test signals" },
   { label: "Pull requests", segment: "pull-requests", icon: GitPullRequest, description: "Review intelligence and PR risk" },
+  { label: "Contracts", segment: "contracts", icon: GitBranch, description: "Declared routes and client call sites" },
+  { label: "Snapshots", segment: "snapshots", icon: Layers, description: "Architecture snapshots and temporal drift" },
+  { label: "Ownership", segment: "ownership", icon: ShieldCheck, description: "Code ownership and bus factor" },
+  { label: "Test selection", segment: "test-select", icon: Terminal, description: "Pick tests affected by a change" },
   { label: "Onboarding", segment: "onboarding", icon: Compass, description: "Guided learning path" },
   { label: "Digital twin", segment: "twin", icon: Boxes, description: "Whole-system model and flows" },
 ];

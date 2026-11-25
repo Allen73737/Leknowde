@@ -15,6 +15,7 @@ import (
 	"github.com/leknowde/platform/backend/internal/config"
 	"github.com/leknowde/platform/backend/internal/gitprov"
 	"github.com/leknowde/platform/backend/internal/models"
+	"github.com/leknowde/platform/backend/internal/platform"
 	"github.com/leknowde/platform/backend/internal/retrieval"
 	"github.com/leknowde/platform/backend/internal/store"
 )
@@ -293,6 +294,21 @@ func (p *Pipeline) Run(ctx context.Context, job models.Job) error {
 	p.step(ctx, &job, "Building dependency graph", 80)
 	if err := p.buildGraph(ctx, repo, job.Branch, parsed, fileIDByPath); err != nil {
 		return fmt.Errorf("build graph: %w", err)
+	}
+
+	// Cross-repository API contracts and an architecture snapshot for the
+	// just-indexed branch. These are deterministic surfaces derived from the
+	// graph, so every index refreshes them.
+	p.step(ctx, &job, "Refreshing API contracts", 90)
+	if contractCount, err := p.store.RefreshAPIContracts(ctx, repo.ID, job.Branch, headSHA); err != nil {
+		p.store.AppendJobLog(ctx, job.ID, "Contract refresh skipped: "+err.Error())
+	} else {
+		p.store.AppendJobLog(ctx, job.ID, fmt.Sprintf("Refreshed %d API contracts.", contractCount))
+	}
+	if _, err := p.store.CreateArchitectureSnapshot(ctx, repo.ID, job.Branch, headSHA, "index-"+platform.FormatTS(time.Now())); err != nil {
+		p.store.AppendJobLog(ctx, job.ID, "Snapshot skipped: "+err.Error())
+	} else {
+		p.store.AppendJobLog(ctx, job.ID, "Architecture snapshot captured.")
 	}
 
 	// Embeddings.

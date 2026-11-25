@@ -2,10 +2,14 @@ package httpapi
 
 import (
 	"context"
+	"errors"
 	"log/slog"
 	"net/http"
+	"os"
+	"os/signal"
 	"strings"
 	"sync"
+	"syscall"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -14,6 +18,7 @@ import (
 	"github.com/leknowde/platform/backend/internal/config"
 	"github.com/leknowde/platform/backend/internal/index"
 	"github.com/leknowde/platform/backend/internal/platform"
+	"github.com/leknowde/platform/backend/internal/secure"
 	"github.com/leknowde/platform/backend/internal/store"
 )
 
@@ -111,8 +116,19 @@ func (s *Server) Router() http.Handler {
 		repos.GET("/:id/conversations", s.handleListConversations)
 		repos.POST("/:id/conversations", s.handleCreateConversation)
 		repos.POST("/:id/chat", s.handleChat)
+		repos.GET("/:id/contracts", s.handleListContracts)
+		repos.GET("/:id/contracts/diff", s.handleContractDiff)
+		repos.GET("/:id/snapshots", s.handleListSnapshots)
+		repos.POST("/:id/snapshots", s.handleCreateSnapshot)
+		repos.GET("/:id/snapshots/:snapshotID", s.handleGetSnapshot)
+		repos.GET("/:id/diff", s.handleArchitectureDiff)
+		repos.GET("/:id/ownership", s.handleOwnership)
+		repos.POST("/:id/test-select", s.handleTestSelect)
+
 		repos.GET("/:id/pull-requests", s.handlePullRequests)
 		repos.POST("/:id/pull-requests/:number/analyze", s.handleAnalyzePR)
+
+		v1.GET("/workspaces/:id/contracts", s.handleWorkspaceContracts)
 
 		v1.GET("/documents/:id", s.requireAuth(), s.handleGetDocument)
 		v1.PATCH("/documents/:id", s.requireAuth(), s.handleUpdateDocument)
@@ -322,6 +338,80 @@ func (s *oauthStateStore) take(state string) (oauthEntry, bool) {
 // System endpoints
 // ---------------------------------------------------------------------------
 
+// LogLevelFor maps a config log level to a slog level. Exported so the CLI
+// binary can configure the same logger without duplicating the switch.
+func LogLevelFor(level string) slog.Level {
+	switch level {
+	case "debug":
+		return slog.LevelDebug
+	case "warn":
+		return slog.LevelWarn
+	case "error":
+		return slog.LevelError
+	default:
+		return slog.LevelInfo
+	}
+}
+
+// Main boots the HTTP server. It is shared by the standalone server binary and
+// the leknowde CLI `serve` subcommand.
+func Main() {
+	cfg := config.Load()
+	logger := slog.New(slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{Level: LogLevelFor(cfg.LogLevel)}))
+	slog.SetDefault(logger)
+
+	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
+	defer stop()
+
+	db, err := platform.Open(cfg)
+	if err != nil {
+		logger.Error("database connection failed", "error", err)
+		os.Exit(1)
+	}
+	defer db.Close()
+
+	if err := platform.Migrate(ctx, db); err != nil {
+		logger.Error("migration failed", "error", err)
+		os.Exit(1)
+	}
+	logger.Info("database ready", "driver", db.Dialect)
+
+	cipher, err := secure.NewCipher(cfg.EncryptionKey, cfg.JWTSecret)
+	if err != nil {
+		logger.Error("encryption initialisation failed", "error", err)
+		os.Exit(1)
+	}
+	st := store.New(db, cipher)
+	mgr := auth.NewManager(cfg.JWTSecret)
+	ai := aiclient.New(cfg.AIServiceURL, cfg.AIInternalToken, time.Duration(cfg.AITimeoutSec)*time.Second)
+	pipeline := index.NewPipeline(st, ai, cfg, logger)
+	pipeline.StartWorkers(ctx)
+
+	server := NewServer(cfg, st, mgr, ai, pipeline, logger)
+	httpServer := &http.Server{
+		Addr:              ":" + cfg.Port,
+		Handler:           server.Router(),
+		ReadHeaderTimeout: 10 * time.Second,
+		ReadTimeout:       60 * time.Second,
+		WriteTimeout:      180 * time.Second,
+		IdleTimeout:       120 * time.Second,
+	}
+
+	go func() {
+		logger.Info("LeKnowde API listening", "addr", httpServer.Addr, "env", cfg.Env, "workers", cfg.WorkerCount)
+		if err := httpServer.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
+			logger.Error("http server failed", "error", err)
+			stop()
+		}
+	}()
+
+	<-ctx.Done()
+	logger.Info("shutting down")
+	shutdownCtx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
+	defer cancel()
+	_ = httpServer.Shutdown(shutdownCtx)
+}
+
 func (s *Server) handleHealth(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(c.Request.Context(), 3*time.Second)
 	defer cancel()
@@ -365,6 +455,11 @@ func (s *Server) handleMeta(c *gin.Context) {
 			"living_documentation": true,
 			"pr_intelligence":      true,
 			"digital_twin":         true,
+			"api_contracts":        true,
+			"architecture_snapshot":true,
+			"ownership":            true,
+			"test_selection":       true,
+			"ci_gate":              true,
 		},
 		"llm":        gin.H{"configured": aiErr == nil && aiStatus.LLM.Configured, "provider": aiStatus.LLM.Provider, "model": aiStatus.LLM.Model, "reason": aiStatus.LLM.Reason},
 		"embeddings": gin.H{"mode": aiStatus.Embeddings.Mode, "model": aiStatus.Embeddings.Model},

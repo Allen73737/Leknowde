@@ -765,3 +765,358 @@ export interface ApiErrorPayload {
   document_id?: string;
   updated_at?: string;
 }
+
+// ---------------------------------------------------------------------------
+// API contracts (cross-repository)
+// ---------------------------------------------------------------------------
+
+export interface Contract {
+  id: string;
+  repository_id: string;
+  repository_name?: string;
+  branch: string;
+  commit_sha?: string;
+  direction: string;
+  method: string;
+  path: string;
+  normalized_path: string;
+  operation: string;
+  file_path: string;
+  line: number;
+  handler?: string;
+  source?: string;
+}
+
+export interface ContractLink {
+  producer_repository_id: string;
+  producer_repository_name: string;
+  producer_file: string;
+  producer_line: number;
+  consumer_repository_id: string;
+  consumer_repository_name: string;
+  consumer_file: string;
+  consumer_line: number;
+  method: string;
+  path: string;
+  operation: string;
+  match: string;
+  confidence: number;
+  cross_repository: boolean;
+}
+
+export interface ContractSurface {
+  producers: Contract[];
+  consumers: Contract[];
+  links: ContractLink[];
+  unmatched_consumers: Contract[];
+  orphan_producers: Contract[];
+  cross_repo_links: number;
+  totals: { producers: number; consumers: number };
+  analyzed_at: string;
+  limitations: string[];
+}
+
+export interface ContractRepository {
+  repository: Repository;
+  branch: string;
+  indexed: boolean;
+  producers: Contract[];
+  consumers: Contract[];
+}
+
+export interface ContractWorkspace {
+  workspace_id: string;
+  repositories: ContractRepository[];
+  surface: ContractSurface;
+  summary: {
+    repositories: number;
+    indexed_repositories: number;
+    producers: number;
+    consumers: number;
+    links: number;
+    cross_repo_links: number;
+    unmatched_consumers: number;
+    orphan_producers: number;
+  };
+  limitations: string[];
+}
+
+export interface ContractEndpoint {
+  method: string;
+  path: string;
+  file: string;
+  line: number;
+}
+
+export interface ContractBreakingChange {
+  kind: string;
+  severity: string;
+  method: string;
+  path: string;
+  detail: string;
+  base_file?: string;
+  head_file?: string;
+  consumers?: ContractLink[];
+}
+
+export interface ContractDiff {
+  repository: Repository;
+  base_branch: string;
+  head_branch: string;
+  base_commit: string;
+  head_commit: string;
+  diff: {
+    base_commit?: string;
+    head_commit?: string;
+    added: ContractEndpoint[];
+    removed: ContractEndpoint[];
+    renamed_parameters: ContractBreakingChange[];
+    breaking: ContractBreakingChange[];
+    unchanged: number;
+    base_total: number;
+    head_total: number;
+    limitations: string[];
+  };
+  affected_repositories: string[];
+  missing_branches: string[];
+  limitations: string[];
+}
+
+// ---------------------------------------------------------------------------
+// Architecture snapshots and temporal diff
+// ---------------------------------------------------------------------------
+
+export interface SnapshotRef {
+  id: string;
+  commit_sha: string;
+  branch: string;
+  label: string;
+  created_at: string;
+  nodes: number;
+  edges: number;
+  files: number;
+  modules: number;
+  api_producers: number;
+  api_consumers: number;
+  cycles: number;
+}
+
+export interface ModuleEdgeChange {
+  from: string;
+  to: string;
+  before: number;
+  after: number;
+  delta: number;
+}
+
+export interface DriftFactor {
+  label: string;
+  points: number;
+  detail: string;
+}
+
+export interface ArchitectureSnapshot {
+  id: string;
+  repository_id: string;
+  branch: string;
+  commit_sha: string;
+  label: string;
+  nodes: number;
+  edges: number;
+  files: number;
+  modules: number;
+  api_producers: number;
+  api_consumers: number;
+  cycles: number;
+  created_at: string;
+  payload?: {
+    files: string[];
+    modules: string[];
+    module_edges: ModuleEdge[];
+    cycles: string[][];
+    producers: string[];
+    consumers: string[];
+    top_files: { path: string; in_degree: number }[];
+    imports: number;
+    symbols: number;
+    cross_module_edges: number;
+  };
+}
+
+export interface TemporalDiff {
+  base: SnapshotRef;
+  head: SnapshotRef;
+  added_files: string[];
+  removed_files: string[];
+  added_module_edges: ModuleEdgeChange[];
+  removed_module_edges: ModuleEdgeChange[];
+  changed_module_edges: ModuleEdgeChange[];
+  new_cycles: string[][];
+  resolved_cycles: string[][];
+  added_apis: string[];
+  removed_apis: string[];
+  coupling_delta: number;
+  cross_module_delta: number;
+  edge_delta: number;
+  file_delta: number;
+  drift_score: number;
+  drift_level: string;
+  drift_factors: DriftFactor[];
+  summary: string[];
+  limitations: string[];
+}
+
+// ---------------------------------------------------------------------------
+// Ownership / hotspots / bus factor
+// ---------------------------------------------------------------------------
+
+export interface AuthorShare {
+  name: string;
+  email: string;
+  touches: number;
+  additions: number;
+  deletions: number;
+  share: number;
+}
+
+export interface AuthorOwnership {
+  name: string;
+  email: string;
+  commits: number;
+  files: number;
+  touches: number;
+  additions: number;
+  deletions: number;
+  share: number;
+  last_active: string;
+}
+
+export interface FileOwnership {
+  path: string;
+  touches: number;
+  additions: number;
+  deletions: number;
+  lines: number;
+  fan_in: number;
+  findings: number;
+  authors: AuthorShare[];
+  top_author: string;
+  top_author_email: string;
+  top_share: number;
+  bus_factor: number;
+  last_touched: string;
+}
+
+export interface ModuleOwnership {
+  module: string;
+  files: number;
+  touches: number;
+  top_author: string;
+  top_email: string;
+  top_share: number;
+  bus_factor: number;
+  hotspot_sum: number;
+}
+
+export interface Hotspot {
+  path: string;
+  score: number;
+  breakdown: Record<string, number>;
+  reason: string;
+  top_author: string;
+  bus_factor: number;
+}
+
+export interface CodeownerRule {
+  pattern: string;
+  handle: string;
+  owner: string;
+  share: number;
+  touches: number;
+  line: string;
+}
+
+export interface OwnershipReport {
+  repository: Repository;
+  branch: string;
+  authors: AuthorOwnership[];
+  files: FileOwnership[];
+  modules: ModuleOwnership[];
+  hotspots: Hotspot[];
+  unowned_hotspots: string[];
+  codeowners: CodeownerRule[];
+  repo_bus_factor: number;
+  top_author_share: number;
+  total_touches: number;
+  commits_with_file_evidence: number;
+  total_stored_commits: number;
+  limitations: string[];
+}
+
+// ---------------------------------------------------------------------------
+// Test impact selection
+// ---------------------------------------------------------------------------
+
+export interface TestReason {
+  test: string;
+  covers: string;
+  hops: number;
+  chain: string[];
+  confidence: string;
+  evidence: string;
+}
+
+export interface TestSelection {
+  repository: Repository;
+  branch: string;
+  changed_files: string[];
+  affected_files: { path: string; depth: number; via: string; why: string; chain: string[] }[];
+  direct_tests: string[];
+  transitive_tests: string[];
+  selected_tests: string[];
+  reasons: TestReason[];
+  unmapped_files: string[];
+  runner: string;
+  command: string;
+  full_suite_command: string;
+  command_rationale: string;
+  confidence: string;
+  confidence_score: number;
+  caveats: string[];
+}
+
+// ---------------------------------------------------------------------------
+// CI / check gate
+// ---------------------------------------------------------------------------
+
+export interface Violation {
+  code: string;
+  severity: string;
+  message: string;
+  file?: string;
+  line?: number;
+  end_line?: number;
+  rule: string;
+}
+
+export interface CheckResult {
+  repository: Repository;
+  branch: string;
+  verdict: string;
+  passed: boolean;
+  health: {
+    score: number;
+    grade: string;
+    findings: number;
+    by_severity: Record<string, number>;
+    by_kind: Record<string, number>;
+    penalties: { label: string; points: number; count: number }[];
+    limitations: string[];
+    metrics: any;
+  };
+  violations: Violation[];
+  counts: { [key: string]: number };
+  policy: any;
+  generated_at: string;
+  limitations: string[];
+}

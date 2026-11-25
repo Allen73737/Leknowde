@@ -67,6 +67,27 @@ export async function safeGet<T>(path: string): Promise<SafeResult<T>> {
   }
 }
 
+export async function safePost<T>(
+  path: string,
+  body: unknown,
+): Promise<SafeResult<T>> {
+  try {
+    return {
+      data: await serverFetch<T>(path, { method: "POST", body: JSON.stringify(body) }),
+      error: null,
+    };
+  } catch (error) {
+    if (error instanceof ApiError) {
+      if (error.status === 401) redirect("/login");
+      return { data: null, error };
+    }
+    return {
+      data: null,
+      error: new ApiError(500, error instanceof Error ? error.message : "Unexpected error."),
+    };
+  }
+}
+
 export async function getMe(): Promise<MeResponse> {
   return serverFetch<MeResponse>("/auth/me");
 }
