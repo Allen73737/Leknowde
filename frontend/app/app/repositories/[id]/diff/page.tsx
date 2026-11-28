@@ -69,8 +69,9 @@ export default async function ArchitectureDiffPage({
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5">
       <SectionHeading
+        eyebrow="Change intelligence"
         title="Temporal architecture diff"
         description="Compares two architecture snapshots captured at index time. Reports added/removed files, module coupling changes, new and resolved cycles, API additions and removals, and an explicit drift score."
       />
@@ -105,7 +106,7 @@ export default async function ArchitectureDiffPage({
                 ]}
               />
 
-              <div className="grid gap-5 lg:grid-cols-2">
+              <div className="grid items-start gap-5 lg:grid-cols-2">
                 <Card>
                   <CardHeader
                     title="Files"

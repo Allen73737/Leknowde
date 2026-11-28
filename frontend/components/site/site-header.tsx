@@ -24,17 +24,17 @@ export function SiteHeader() {
 
   return (
     <header className="sticky top-0 z-40 border-b border-line bg-canvas">
-      <div className="container-wide flex h-[4.5rem] items-center justify-between gap-6">
-        <div className="flex min-w-0 items-center gap-10">
+      <div className="container-wide flex h-16 items-center justify-between gap-6">
+        <div className="flex min-w-0 items-center gap-9">
           <Link
             href="/"
             aria-label="LeKnowde home"
-            className="focus-ring shrink-0 rounded-lg"
+            className="focus-ring shrink-0 rounded-[6px]"
           >
-            <Logo size={30} />
+            <Logo size={26} />
           </Link>
 
-          <nav className="hidden items-center gap-1.5 lg:flex" aria-label="Primary">
+          <nav className="hidden items-center gap-0.5 lg:flex" aria-label="Primary">
             {links.map((link) => {
               const active = pathname === link.href || pathname.startsWith(`${link.href}/`);
               return (
@@ -43,7 +43,7 @@ export function SiteHeader() {
                   href={link.href}
                   aria-current={active ? "page" : undefined}
                   className={cn(
-                    "group relative rounded-lg px-4 py-2.5 text-base font-medium transition-colors duration-200",
+                    "group relative rounded-[6px] px-3.5 py-2 text-[0.8125rem] font-medium transition-colors duration-150",
                     active ? "text-ink" : "text-muted hover:text-ink",
                   )}
                 >
@@ -87,9 +87,9 @@ export function SiteHeader() {
             onClick={() => setOpen((value) => !value)}
             aria-label={open ? "Close menu" : "Open menu"}
             aria-expanded={open}
-            className="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-line text-muted transition-colors duration-200 hover:border-line-strong hover:text-ink lg:hidden"
+            className="inline-flex h-9 w-9 items-center justify-center rounded-[6px] border border-line text-muted transition-colors duration-150 hover:border-line-strong hover:text-ink lg:hidden"
           >
-            {open ? <X className="h-[1.125rem] w-[1.125rem]" /> : <Menu className="h-[1.125rem] w-[1.125rem]" />}
+            {open ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
           </button>
         </div>
       </div>

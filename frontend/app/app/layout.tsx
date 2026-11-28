@@ -6,7 +6,7 @@ import { AppShell } from "@/components/app/app-shell";
 import { buttonStyles } from "@/components/ui/button";
 import { getNotifications, getWorkspaces } from "@/lib/app-data";
 import { safeGet } from "@/lib/server-api";
-import type { MeResponse } from "@/lib/types";
+import type { MeResponse, MetaResponse } from "@/lib/types";
 
 export const metadata: Metadata = {
   title: { default: "Workspace", template: "%s · LeKnowde" },
@@ -39,12 +39,16 @@ export default async function AppLayout({ children }: { children: React.ReactNod
     );
   }
 
-  const [workspacesResult, notificationsResult] = await Promise.all([getWorkspaces(), getNotifications()]);
+  const [workspacesResult, notificationsResult, metaResult] = await Promise.all([
+    getWorkspaces(),
+    getNotifications(),
+    safeGet<MetaResponse>("/meta"),
+  ]);
   const workspaces = workspacesResult.data?.workspaces ?? [];
   const unread = notificationsResult.data?.unread ?? 0;
 
   return (
-    <AppShell me={me.data} workspaces={workspaces} unread={unread}>
+    <AppShell me={me.data} workspaces={workspaces} unread={unread} meta={metaResult.data}>
       {children}
     </AppShell>
   );

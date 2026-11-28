@@ -3,16 +3,16 @@ import type { InputHTMLAttributes, LabelHTMLAttributes, ReactNode, SelectHTMLAtt
 import { cn } from "@/lib/format";
 
 const fieldBase =
-  "w-full rounded-lg border border-line bg-surface px-3.5 text-base text-ink placeholder:text-faint transition-all duration-200 ease-smooth hover:border-line-strong focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/25 disabled:cursor-not-allowed disabled:opacity-60";
+  "w-full rounded-[7px] border border-line bg-surface px-3 text-[0.875rem] text-ink placeholder:text-faint transition-[border-color,box-shadow] duration-150 ease-smooth hover:border-line-strong focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent/30 disabled:cursor-not-allowed disabled:opacity-60";
 
 export function Input({ className, ...props }: InputHTMLAttributes<HTMLInputElement>) {
-  return <input className={cn(fieldBase, "h-12", className)} {...props} />;
+  return <input className={cn(fieldBase, "h-10", className)} {...props} />;
 }
 
 export function Textarea({ className, ...props }: TextareaHTMLAttributes<HTMLTextAreaElement>) {
   return (
     <textarea
-      className={cn(fieldBase, "min-h-28 resize-y py-3 leading-relaxed", className)}
+      className={cn(fieldBase, "min-h-28 resize-y py-2.5 leading-relaxed", className)}
       {...props}
     />
   );
@@ -20,7 +20,7 @@ export function Textarea({ className, ...props }: TextareaHTMLAttributes<HTMLTex
 
 export function Select({ className, children, ...props }: SelectHTMLAttributes<HTMLSelectElement>) {
   return (
-    <select className={cn(fieldBase, "h-12 cursor-pointer pr-9", className)} {...props}>
+    <select className={cn(fieldBase, "h-10 cursor-pointer pr-8", className)} {...props}>
       {children}
     </select>
   );
@@ -29,7 +29,7 @@ export function Select({ className, children, ...props }: SelectHTMLAttributes<H
 export function Label({ className, children, ...props }: LabelHTMLAttributes<HTMLLabelElement>) {
   return (
     <label
-      className={cn("mb-2 block text-sm font-semibold tracking-[-0.005em] text-ink", className)}
+      className={cn("mb-1.5 block text-[0.8125rem] font-medium tracking-[-0.005em] text-ink", className)}
       {...props}
     >
       {children}

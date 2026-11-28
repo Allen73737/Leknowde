@@ -35,8 +35,9 @@ export default async function SnapshotsPage({
   const loadError = result.error;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5">
       <SectionHeading
+        eyebrow="Change intelligence"
         title="Architecture snapshots"
         description="A deterministic summary of the graph captured at the end of each index: files, modules, coupling, APIs, cycles. Compare any two snapshots to see drift over time."
         action={

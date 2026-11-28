@@ -221,7 +221,7 @@ export default function LandingPage() {
           </div>
         </section>
         <section className="border-b border-line bg-shell">
-          <div className="container-wide py-16 sm:py-20 lg:py-24">
+          <div className="container-wide py-14 sm:py-16 lg:py-20">
             <div className="grid grid-cols-[minmax(0,1fr)] gap-12 lg:grid-cols-[0.9fr_1.1fr] lg:gap-24">
               <Reveal>
                 <p className="eyebrow">Problem</p>
@@ -296,7 +296,7 @@ export default function LandingPage() {
 
         {/* Capabilities --------------------------------------------------- */}
         <section id="capabilities" className="border-b border-line">
-          <div className="container-wide py-16 sm:py-20 lg:py-24">
+          <div className="container-wide py-14 sm:py-16 lg:py-20">
             <Reveal className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
               <div>
                 <p className="eyebrow">Surfaces</p>
@@ -313,7 +313,7 @@ export default function LandingPage() {
               </Link>
             </Reveal>
 
-            <Stagger className="mt-14 grid grid-cols-[minmax(0,1fr)] gap-4 sm:grid-cols-2 xl:grid-cols-4" gap={0.05}>
+            <Stagger className="mt-10 grid grid-cols-[minmax(0,1fr)] gap-4 sm:grid-cols-2 xl:grid-cols-4" gap={0.05}>
               {capabilities.map((capability) => (
                 <StaggerItem key={capability.title} className="h-full">
                   <Link
@@ -342,7 +342,7 @@ export default function LandingPage() {
 
         {/* Deterministic vs probabilistic --------------------------------- */}
         <section className="border-b border-line bg-shell">
-          <div className="container-wide py-16 sm:py-20 lg:py-24">
+          <div className="container-wide py-14 sm:py-16 lg:py-20">
             <div className="grid grid-cols-[minmax(0,1fr)] gap-8 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)] lg:items-end lg:gap-24">
               <Reveal>
                 <p className="eyebrow">Two layers</p>
@@ -359,7 +359,7 @@ export default function LandingPage() {
               </Reveal>
             </div>
 
-            <div className="mt-14 grid gap-0 overflow-hidden rounded-card border border-line bg-canvas shadow-card md:grid-cols-2">
+            <div className="mt-10 grid gap-0 overflow-hidden rounded-card border border-line bg-canvas shadow-card md:grid-cols-2">
               <Reveal className="flex flex-col border-b border-line p-7 sm:p-9 md:border-b-0 md:border-r xl:p-11">
                 <div className="flex flex-wrap items-center justify-between gap-2">
                   <span className="flex items-center gap-2 text-base font-semibold text-ink">
@@ -517,7 +517,7 @@ export default function LandingPage() {
 
         {/* Architecture -------------------------------------------------- */}
         <section className="border-b border-line bg-shell">
-          <div className="container-wide py-16 sm:py-20 lg:py-24">
+          <div className="container-wide py-14 sm:py-16 lg:py-20">
             <div className="grid grid-cols-[minmax(0,1fr)] gap-12 lg:grid-cols-[0.8fr_1.2fr] lg:gap-20">
               <Reveal>
                 <p className="eyebrow">Architecture</p>
@@ -613,7 +613,7 @@ export default function LandingPage() {
 
         {/* Security ------------------------------------------------------ */}
         <section className="border-b border-line">
-          <div className="container-wide py-16 sm:py-20 lg:py-24">
+          <div className="container-wide py-14 sm:py-16 lg:py-20">
             <div className="grid grid-cols-[minmax(0,1fr)] gap-12 lg:grid-cols-[1fr_1.1fr] lg:gap-20">
               <Reveal>
                 <p className="eyebrow">Security</p>
@@ -686,7 +686,7 @@ export default function LandingPage() {
 
         {/* CTA ----------------------------------------------------------- */}
         <section className="border-t border-line bg-shell">
-          <div className="container-wide py-16 sm:py-20 lg:py-24">
+          <div className="container-wide py-14 sm:py-16 lg:py-20">
             <Reveal>
               <div className="grid grid-cols-[minmax(0,1fr)] gap-12 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,0.6fr)] lg:items-end">
                 <div>

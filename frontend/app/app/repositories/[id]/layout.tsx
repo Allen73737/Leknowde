@@ -37,7 +37,7 @@ export default async function RepositoryLayout({
   const latestJob = jobs.data?.jobs[0] ?? bundle.data.jobs[0];
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5">
       <RepoHeader repository={repository} stats={stats} latestJob={latestJob} />
       {children}
     </div>

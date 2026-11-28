@@ -24,8 +24,9 @@ export default async function DocumentationPage({ params }: { params: Promise<{ 
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5">
       <SectionHeading
+        eyebrow="Document"
         title="Documentation"
         description="Readmes, architecture notes, API references, onboarding guides and ADR scaffolds generated from indexed structure. Drift is reported when facts move."
       />

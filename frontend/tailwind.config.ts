@@ -46,7 +46,11 @@ const config: Config = {
         "7xl": ["4.75rem", { lineHeight: "4.8rem" }],
       },
       borderRadius: {
-        card: "0.875rem",
+        card: "0.625rem",
+        chip: "0.3125rem",
+      },
+      maxWidth: {
+        shell: "112rem",
       },
       boxShadow: {
         panel: "0 1px 0 0 var(--line)",

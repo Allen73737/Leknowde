@@ -6,20 +6,20 @@
   /* Mineral Signal — dark (default)
      Channels first, colour second: Tailwind needs the channel form so that
      opacity modifiers (bg-raised/50, border-line/70) resolve correctly. */
-  --canvas-rgb: 16 21 19;
-  --shell-rgb: 22 29 26;
-  --surface-rgb: 27 36 32;
-  --raised-rgb: 36 48 41;
-  --line-rgb: 53 66 59;
-  --line-strong-rgb: 70 85 76;
-  --ink-rgb: 242 244 238;
-  --muted-rgb: 182 192 182;
-  --faint-rgb: 147 160 150;
-  --accent-rgb: 174 198 181;
-  --accent-fg-rgb: 16 26 20;
-  --success-rgb: 127 178 143;
-  --warning-rgb: 203 177 118;
-  --danger-rgb: 208 133 133;
+  --canvas-rgb: 12 15 13;
+  --shell-rgb: 17 22 18;
+  --surface-rgb: 21 27 22;
+  --raised-rgb: 29 37 31;
+  --line-rgb: 39 48 41;
+  --line-strong-rgb: 58 70 61;
+  --ink-rgb: 240 242 235;
+  --muted-rgb: 167 176 166;
+  --faint-rgb: 121 132 122;
+  --accent-rgb: 198 209 186;
+  --accent-fg-rgb: 14 18 12;
+  --success-rgb: 138 186 150;
+  --warning-rgb: 209 181 116;
+  --danger-rgb: 212 138 138;
 
   --canvas: rgb(var(--canvas-rgb));
   --shell: rgb(var(--shell-rgb));
@@ -36,34 +36,34 @@
   --warning: rgb(var(--warning-rgb));
   --danger: rgb(var(--danger-rgb));
   --shadow-card:
-    0 1px 2px rgb(0 0 0 / 0.28),
-    0 16px 40px -28px rgb(0 0 0 / 0.65),
-    inset 0 1px 0 rgb(255 255 255 / 0.035);
+    0 1px 0 rgb(0 0 0 / 0.22),
+    0 12px 32px -30px rgb(0 0 0 / 0.7),
+    inset 0 1px 0 rgb(255 255 255 / 0.025);
   --shadow-lift:
-    0 2px 6px rgb(0 0 0 / 0.3),
-    0 24px 60px -30px rgb(0 0 0 / 0.7),
-    inset 0 1px 0 rgb(255 255 255 / 0.05);
+    0 2px 5px rgb(0 0 0 / 0.26),
+    0 20px 52px -32px rgb(0 0 0 / 0.72),
+    inset 0 1px 0 rgb(255 255 255 / 0.04);
   --shadow-pop:
-    0 10px 24px -12px rgb(0 0 0 / 0.55),
-    0 40px 90px -40px rgb(0 0 0 / 0.8);
+    0 8px 20px -12px rgb(0 0 0 / 0.6),
+    0 34px 80px -44px rgb(0 0 0 / 0.85);
   color-scheme: dark;
 }
 
 [data-theme="light"] {
-  --canvas-rgb: 243 244 238;
-  --shell-rgb: 234 237 228;
-  --surface-rgb: 252 252 248;
-  --raised-rgb: 228 233 221;
-  --line-rgb: 210 217 204;
-  --line-strong-rgb: 185 194 180;
-  --ink-rgb: 19 27 22;
-  --muted-rgb: 81 96 85;
-  --faint-rgb: 106 120 110;
-  --accent-rgb: 79 107 91;
-  --accent-fg-rgb: 247 248 243;
-  --success-rgb: 69 122 88;
-  --warning-rgb: 132 106 46;
-  --danger-rgb: 156 75 75;
+  --canvas-rgb: 241 241 233;
+  --shell-rgb: 233 234 224;
+  --surface-rgb: 251 251 245;
+  --raised-rgb: 226 228 216;
+  --line-rgb: 206 209 195;
+  --line-strong-rgb: 176 181 163;
+  --ink-rgb: 16 20 14;
+  --muted-rgb: 75 83 73;
+  --faint-rgb: 104 113 102;
+  --accent-rgb: 71 92 70;
+  --accent-fg-rgb: 248 249 243;
+  --success-rgb: 58 112 78;
+  --warning-rgb: 125 100 40;
+  --danger-rgb: 150 68 68;
   --shadow-card:
     0 1px 2px rgb(23 32 26 / 0.06),
     0 18px 44px -30px rgb(23 32 26 / 0.28),
@@ -91,7 +91,8 @@ body {
   background-color: var(--canvas);
   color: var(--ink);
   font-size: 16px;
-  line-height: 1.65;
+  line-height: 1.6;
+  letter-spacing: -0.004em;
   font-feature-settings: "ss01" on, "cv11" on;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -111,16 +112,16 @@ body {
 }
 
 ::-webkit-scrollbar {
-  width: 12px;
-  height: 12px;
+  width: 10px;
+  height: 10px;
 }
 ::-webkit-scrollbar-track {
   background: var(--canvas);
 }
 ::-webkit-scrollbar-thumb {
   background: var(--line-strong);
-  border: 3px solid var(--canvas);
-  border-radius: 10px;
+  border: 2px solid var(--canvas);
+  border-radius: 8px;
   transition: background 150ms ease;
 }
 ::-webkit-scrollbar-thumb:hover {
@@ -181,7 +182,7 @@ body {
     @apply rounded-card border border-line bg-shell;
   }
   .eyebrow {
-    @apply text-[0.75rem] font-semibold uppercase tracking-[0.12em] text-faint;
+    @apply text-[0.75rem] font-semibold uppercase tracking-[0.14em] text-faint;
   }
   .hairline {
     @apply border-t border-line;
@@ -191,9 +192,9 @@ body {
   }
   .grid-backdrop {
     background-image:
-      linear-gradient(to right, color-mix(in srgb, var(--line) 30%, transparent) 1px, transparent 1px),
-      linear-gradient(to bottom, color-mix(in srgb, var(--line) 30%, transparent) 1px, transparent 1px);
-    background-size: 40px 40px;
+      linear-gradient(to right, color-mix(in srgb, var(--line) 26%, transparent) 1px, transparent 1px),
+      linear-gradient(to bottom, color-mix(in srgb, var(--line) 26%, transparent) 1px, transparent 1px);
+    background-size: 48px 48px;
   }
   .text-balance {
     text-wrap: balance;
@@ -201,6 +202,52 @@ body {
   .tabular {
     font-variant-numeric: tabular-nums;
     letter-spacing: -0.01em;
+  }
+
+  /* Editorial rhythm ----------------------------------------------------- */
+  .page-frame {
+    @apply mx-auto w-full max-w-[112rem];
+  }
+  .meta-label {
+    @apply text-[0.75rem] font-medium uppercase tracking-[0.14em] text-faint;
+  }
+  .mono-meta {
+    @apply font-mono text-[0.75rem] tracking-[-0.01em] text-faint;
+  }
+  .tick {
+    @apply block h-[2px] w-4 bg-accent/70;
+  }
+  .kbd {
+    @apply inline-flex h-5 min-w-[1.25rem] items-center justify-center rounded-[4px] border border-line bg-canvas px-1 font-mono text-[0.75rem] leading-none text-faint;
+  }
+  .chip {
+    @apply inline-flex items-center gap-1.5 rounded-[5px] border border-line bg-shell px-1.5 py-[3px] font-mono text-[0.75rem] leading-none text-muted;
+  }
+
+  /* Ledger tables -------------------------------------------------------- */
+  .ledger {
+    @apply w-full border-collapse text-left;
+  }
+  .ledger thead th {
+    @apply border-b border-line bg-shell/60 px-4 py-2 text-[0.75rem] font-medium uppercase tracking-[0.12em] text-faint;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+  }
+  .ledger tbody tr {
+    @apply border-b border-line/60 transition-colors duration-150;
+  }
+  .ledger tbody tr:last-child {
+    border-bottom: 0;
+  }
+  .ledger tbody tr:hover {
+    background: color-mix(in srgb, var(--raised) 46%, transparent);
+  }
+  .ledger tbody td {
+    @apply px-4 py-2.5 align-middle text-[0.8125rem] text-muted;
+  }
+  .ledger .cell-lead {
+    @apply text-[0.875rem] font-medium text-ink;
   }
 
   /* Motion -------------------------------------------------------------- */
@@ -293,19 +340,19 @@ body {
     @apply w-full border-collapse text-left;
   }
   .data-table thead th {
-    @apply border-b border-line bg-shell px-4 py-3.5 text-[0.75rem] font-medium tracking-[0.01em] text-faint;
+    @apply border-b border-line bg-shell/60 px-4 py-2 text-[0.75rem] font-medium uppercase tracking-[0.12em] text-faint;
     position: sticky;
     top: 0;
     z-index: 1;
   }
   .data-table tbody tr {
-    @apply border-b border-line/70 transition-colors;
+    @apply border-b border-line/60 transition-colors duration-150;
   }
   .data-table tbody tr:hover {
-    background: color-mix(in srgb, var(--raised) 55%, transparent);
+    background: color-mix(in srgb, var(--raised) 46%, transparent);
   }
   .data-table tbody td {
-    @apply px-4 py-3.5 align-top text-sm text-muted;
+    @apply px-4 py-2.5 align-middle text-[0.8125rem] text-muted;
   }
 }
 
@@ -429,20 +476,47 @@ body {
 
 /* React Flow ------------------------------------------------------------- */
 .react-flow__attribution {
-  display: none;
+  display: none !important;
+}
+.react-flow__controls {
+  overflow: hidden;
+  border: 1px solid var(--line) !important;
+  border-radius: 6px !important;
+  background: var(--surface) !important;
+  box-shadow: none !important;
 }
 .react-flow__controls-button {
-  background: var(--surface);
-  border-bottom: 1px solid var(--line);
-  color: var(--muted);
-  fill: var(--muted);
+  width: 26px !important;
+  height: 26px !important;
+  background: var(--surface) !important;
+  border-bottom: 1px solid var(--line) !important;
+  color: var(--muted) !important;
+  fill: var(--muted) !important;
   transition: background 150ms ease;
 }
 .react-flow__controls-button:hover {
-  background: var(--raised);
+  background: var(--raised) !important;
+  color: var(--ink) !important;
+}
+.react-flow__controls-button:last-child {
+  border-bottom: 0 !important;
+}
+.react-flow__controls-button svg {
+  max-width: 12px;
+  max-height: 12px;
+  fill: currentColor !important;
 }
 .react-flow__minimap {
-  background: var(--shell);
+  background: var(--shell) !important;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+}
+.react-flow__minimap-mask {
+  fill: rgb(var(--shell-rgb) / 0.72) !important;
+}
+.react-flow__handle {
+  border: 0 !important;
+  background: var(--faint) !important;
 }
 
 /* Monaco ----------------------------------------------------------------- */

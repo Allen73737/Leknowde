@@ -38,21 +38,21 @@ export function UserMenu({ name, email }: { name: string; email: string }) {
         onClick={() => setOpen((value) => !value)}
         aria-expanded={open}
         aria-haspopup="menu"
-        className="flex items-center gap-2 rounded-md border border-transparent px-1.5 py-1 text-left transition-colors hover:border-line hover:bg-raised"
+        className="flex items-center gap-2 rounded-[6px] border border-transparent px-1 py-0.5 text-left transition-colors hover:border-line hover:bg-raised"
       >
-        <span className="flex h-7 w-7 items-center justify-center rounded-full border border-line bg-raised font-mono text-[0.75rem] font-medium text-accent">
+        <span className="flex h-6 w-6 items-center justify-center rounded-[5px] border border-line bg-raised font-mono text-[0.75rem] font-medium text-accent">
           {initials(name)}
         </span>
         <span className="hidden min-w-0 sm:block">
-          <span className="block truncate text-xs font-medium text-ink">{name}</span>
+          <span className="block truncate text-[0.75rem] font-medium text-ink">{name}</span>
           <span className="block truncate font-mono text-[0.75rem] text-faint">{email}</span>
         </span>
-        <ChevronDown className="h-3.5 w-3.5 text-faint" aria-hidden="true" />
+        <ChevronDown className="h-3 w-3 text-faint" aria-hidden="true" />
       </button>
       {open ? (
         <div
           role="menu"
-          className="absolute right-0 top-full z-50 mt-2 w-60 overflow-hidden rounded-md border border-line bg-surface shadow-xl shadow-black/20"
+          className="absolute right-0 top-full z-50 mt-1.5 w-56 overflow-hidden rounded-card border border-line bg-surface shadow-pop"
         >
           <div className="border-b border-line px-3.5 py-3">
             <p className="truncate text-xs font-medium text-ink">{name}</p>

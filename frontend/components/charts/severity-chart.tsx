@@ -68,7 +68,7 @@ export function SeverityChart({ data }: { data: { severity: string; count: numbe
             }}
             labelStyle={{ color: "var(--muted)", fontSize: 12, textTransform: "uppercase", letterSpacing: "0.08em" }}
           />
-          <Bar dataKey="count" radius={[2, 2, 0, 0]} isAnimationActive={false}>
+          <Bar dataKey="count" radius={[2, 2, 0, 0]} maxBarSize={56} isAnimationActive={false}>
             {rows.map((row) => (
               <Cell key={row.severity} fill={colors[row.severity] ?? "var(--accent)"} />
             ))}

@@ -14,13 +14,13 @@ export function ApiErrorNote({
   title?: string;
 }) {
   return (
-    <div className="rounded-card border border-danger/40 bg-danger/5 px-4 py-6">
+    <div className="rounded-card border border-danger/40 bg-danger/5 px-4 py-5">
       <div className="flex items-start gap-3">
         <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-danger" aria-hidden="true" />
         <div className="min-w-0">
-          <h2 className="text-sm font-semibold text-ink">{title}</h2>
-          <p className="mt-1.5 text-xs leading-relaxed text-muted">{error.message}</p>
-          <p className="mt-2 font-mono text-[0.75rem] text-faint">
+          <h2 className="text-[0.875rem] font-semibold text-ink">{title}</h2>
+          <p className="mt-1 text-[0.8125rem] leading-relaxed text-muted">{error.message}</p>
+          <p className="mt-1.5 font-mono text-[0.75rem] text-faint">
             HTTP {error.status} · {error.code}
           </p>
           {retryHref ? (
@@ -40,8 +40,8 @@ export function NotIndexedNotice({ repositoryID, status }: { repositoryID: strin
       <div className="flex items-start gap-3">
         <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-warning" aria-hidden="true" />
         <div>
-          <h2 className="text-sm font-semibold text-ink">This repository is not indexed yet</h2>
-          <p className="mt-1.5 max-w-2xl text-xs leading-relaxed text-muted">
+          <h2 className="text-[0.875rem] font-semibold text-ink">This repository is not indexed yet</h2>
+          <p className="mt-1 max-w-2xl text-[0.8125rem] leading-relaxed text-muted">
             Current status is <span className="font-mono text-ink">{status}</span>. Indexing parses files, resolves
             imports and builds the graph. Start a job from the repository header and this view will populate when it
             completes.

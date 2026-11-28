@@ -7,7 +7,7 @@ import { LogoLoader } from "@/components/brand/logo-loader";
  */
 export default function AppLoading() {
   return (
-    <div className="space-y-7" role="status" aria-live="polite">
+    <div className="space-y-5" role="status" aria-live="polite">
       <div className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
         <div className="min-w-0">
           <div className="flex items-center gap-4">

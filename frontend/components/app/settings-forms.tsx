@@ -150,7 +150,7 @@ export function SettingsForms({ me, workspaces }: { me: MeResponse; workspaces: 
 
   return (
     <div className="space-y-4">
-      <div className="grid gap-4 lg:grid-cols-2">
+      <div className="grid items-start gap-4 lg:grid-cols-2">
         <Card>
           <CardHeader
             title="Profile"
@@ -250,7 +250,7 @@ export function SettingsForms({ me, workspaces }: { me: MeResponse; workspaces: 
         </Card>
       </div>
 
-      <div className="grid gap-4 lg:grid-cols-2">
+      <div className="grid items-start gap-4 lg:grid-cols-2">
         <Card>
           <CardHeader
             title="Password"

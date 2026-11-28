@@ -31,7 +31,7 @@ export function ThemeToggle({ className = "" }: { className?: string }) {
       onClick={toggle}
       aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} theme`}
       title={`Switch to ${theme === "dark" ? "light" : "dark"} theme`}
-      className={`relative inline-flex h-10 w-10 items-center justify-center overflow-hidden rounded-lg border border-transparent text-muted transition-all duration-200 ease-smooth hover:border-line hover:bg-raised hover:text-ink active:scale-95 ${className}`}
+      className={`relative inline-flex h-8 w-8 items-center justify-center overflow-hidden rounded-[6px] border border-transparent text-muted transition-colors duration-150 ease-smooth hover:bg-raised hover:text-ink ${className}`}
     >
       <AnimatePresence initial={false} mode="wait">
         <motion.span

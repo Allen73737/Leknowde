@@ -114,7 +114,7 @@ export function TestSelectionForm({ repositoryID }: { repositoryID: string }) {
         ]}
       />
 
-      <div className="grid gap-5 lg:grid-cols-2">
+      <div className="grid items-start gap-5 lg:grid-cols-2">
         <Card className="flex flex-col">
           <CardHeader title="Command to run" icon={<Play className="h-4 w-4" aria-hidden="true" />} />
           <div className="px-5 py-4">
@@ -146,7 +146,7 @@ export function TestSelectionForm({ repositoryID }: { repositoryID: string }) {
         </Card>
       </div>
 
-      <div className="grid gap-5 lg:grid-cols-2">
+      <div className="grid items-start gap-5 lg:grid-cols-2">
         <Card>
           <CardHeader title="Reasoning" description="Each selected test and what it covers, with dependency hops." />
           <div className="space-y-3 px-5 py-4">

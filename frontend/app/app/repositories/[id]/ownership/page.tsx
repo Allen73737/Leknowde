@@ -45,8 +45,9 @@ export default async function OwnershipPage({
   const { authors, files, modules, hotspots, unowned_hotspots, codeowners, repo_bus_factor, top_author_share, total_touches, commits_with_file_evidence, total_stored_commits, limitations } = result.data;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5">
       <SectionHeading
+        eyebrow="Change intelligence"
         title="Ownership, hotspots and bus factor"
         description="Commit-file evidence from the index, combined with graph fan-in and stored findings. Bus factor is the number of people who hold 50% of the change knowledge. CODEOWNERS entries are suggestions only — verify handles before committing."
         action={<Badge>{commits_with_file_evidence} / {total_stored_commits} commits indexed</Badge>}
@@ -61,7 +62,7 @@ export default async function OwnershipPage({
         ]}
       />
 
-      <div className="grid gap-5 lg:grid-cols-3">
+      <div className="grid items-start gap-5 lg:grid-cols-3">
         <Card className="flex flex-col">
           <CardHeader
             title="Top authors"
@@ -148,7 +149,7 @@ export default async function OwnershipPage({
         </Card>
       </div>
 
-      <div className="grid gap-5 lg:grid-cols-2">
+      <div className="grid items-start gap-5 lg:grid-cols-2">
         <Card>
           <CardHeader
             title="File ownership"

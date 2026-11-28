@@ -202,7 +202,7 @@ export function SystemGraph({
           nodeTypes={nodeTypes}
           fitView
           fitViewOptions={{ padding: 0.14 }}
-          minZoom={0.35}
+          minZoom={0.2}
           maxZoom={1.8}
           nodesDraggable
           nodesConnectable={false}

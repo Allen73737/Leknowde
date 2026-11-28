@@ -20,7 +20,7 @@ export function Progress({
   }[tone];
   return (
     <div
-      className={cn("h-2 w-full overflow-hidden rounded-full bg-raised", className)}
+      className={cn("h-1.5 w-full overflow-hidden rounded-[2px] bg-raised", className)}
       role="progressbar"
       aria-valuenow={Math.round(clamped)}
       aria-valuemin={0}
@@ -29,7 +29,7 @@ export function Progress({
     >
       <div
         className={cn(
-          "bar-in h-full rounded-full transition-[width] duration-700 ease-smooth",
+          "bar-in h-full rounded-[2px] transition-[width] duration-700 ease-smooth",
           toneClass,
         )}
         style={{ width: `${clamped}%` }}

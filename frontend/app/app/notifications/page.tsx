@@ -13,7 +13,7 @@ export default async function NotificationsPage() {
 
   if (!result.data) {
     return (
-      <div className="space-y-6">
+      <div className="space-y-5">
         <SectionHeading title="Notifications" />
         <ApiErrorNote error={result.error} retryHref="/app/notifications" />
       </div>
@@ -21,8 +21,9 @@ export default async function NotificationsPage() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5">
       <SectionHeading
+        eyebrow="Inbox"
         title="Notifications"
         description="Indexing outcomes and workspace membership changes recorded for your account. These are platform events, not model output."
         action={<Bell className="h-4 w-4 text-faint" aria-hidden="true" />}

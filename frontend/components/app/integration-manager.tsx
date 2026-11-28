@@ -131,7 +131,7 @@ export function IntegrationManager({
         </InlineNotice>
       ) : null}
 
-      <div className="grid gap-4 lg:grid-cols-2">
+      <div className="grid items-start gap-4 lg:grid-cols-2">
         {providers.map((provider) => {
           const integration = byProvider.get(provider.id);
           const Icon = provider.icon;
@@ -290,7 +290,7 @@ export function IntegrationManager({
         })}
       </div>
 
-      <div className="grid gap-4 lg:grid-cols-2">
+      <div className="grid items-start gap-4 lg:grid-cols-2">
         <section className="rounded-card border border-line bg-surface px-4 py-4">
           <h2 className="flex items-center gap-2 text-xs font-semibold text-ink">
             <ShieldCheck className="h-4 w-4 text-accent" aria-hidden="true" /> How credentials are handled

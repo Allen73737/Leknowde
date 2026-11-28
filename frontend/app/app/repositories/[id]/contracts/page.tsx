@@ -50,8 +50,9 @@ export default async function ContractsPage({
   const crossRepo = (links ?? []).filter((l) => l.cross_repository);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5">
       <SectionHeading
+        eyebrow="Change intelligence"
         title="API contracts"
         description="Declared routes (producers) matched to client call sites (consumers), computed from the indexed graph. Matching is structural — method plus normalised path — so request and response schemas are not compared."
         action={
@@ -76,7 +77,7 @@ export default async function ContractsPage({
         ]}
       />
 
-      <div className="grid gap-5 lg:grid-cols-3">
+      <div className="grid items-start gap-5 lg:grid-cols-3">
         <Card className="flex flex-col">
           <CardHeader
             title="Producers (EXPOSES)"
@@ -192,7 +193,7 @@ export default async function ContractsPage({
         </Card>
       </div>
 
-      <div className="grid gap-5 lg:grid-cols-2">
+      <div className="grid items-start gap-5 lg:grid-cols-2">
         <Card>
           <CardHeader
             title="Unmatched consumers"

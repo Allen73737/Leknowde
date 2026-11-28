@@ -24,8 +24,9 @@ export default async function SymbolsPage({ params }: { params: Promise<{ id: st
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5">
       <SectionHeading
+        eyebrow="Structure"
         title="Symbols"
         description="Functions, classes, interfaces and components extracted by the parser. Names and line ranges are deterministic; doc comments come from source."
       />

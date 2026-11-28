@@ -73,7 +73,7 @@ export function ImpactReportView({
         </div>
       </Card>
 
-      <div className="grid gap-4 lg:grid-cols-[1fr_1fr]">
+      <div className="grid items-start gap-4 lg:grid-cols-[1fr_1fr]">
         <Card>
           <CardHeader
             title="Risk factors"
@@ -127,7 +127,7 @@ export function ImpactReportView({
         </Card>
       </div>
 
-      <div className="grid gap-4 lg:grid-cols-2">
+      <div className="grid items-start gap-4 lg:grid-cols-2">
         <Card>
           <CardHeader
             title="Seeds"
@@ -188,7 +188,7 @@ export function ImpactReportView({
         </Card>
       </div>
 
-      <div className="grid gap-4 lg:grid-cols-[1fr_1fr]">
+      <div className="grid items-start gap-4 lg:grid-cols-[1fr_1fr]">
         <Card>
           <CardHeader
             title="Tests"

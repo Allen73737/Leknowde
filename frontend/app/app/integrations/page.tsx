@@ -18,7 +18,7 @@ export default async function IntegrationsPage({
 
   if (!result.data) {
     return (
-      <div className="space-y-6">
+      <div className="space-y-5">
         <SectionHeading title="Integrations" />
         <ApiErrorNote error={result.error} retryHref="/app/integrations" />
       </div>
@@ -26,8 +26,9 @@ export default async function IntegrationsPage({
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5">
       <SectionHeading
+        eyebrow="Connections"
         title="Integrations"
         description="Provider connections are organization-scoped. The stored token is used to list repositories and download a branch for indexing; tests and analysis never execute it."
         action={<ShieldCheck className="h-4 w-4 text-faint" aria-hidden="true" />}

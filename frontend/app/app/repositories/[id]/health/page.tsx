@@ -49,8 +49,9 @@ export default async function HealthPage({ params }: { params: Promise<{ id: str
   }));
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5">
       <SectionHeading
+        eyebrow="Analyze"
         title="Software health"
         description="Pattern-based findings, complexity metrics and test signals. This is not a vulnerability scan and it does not execute code."
         action={<Badge>{parser || "parser unknown"}</Badge>}
@@ -84,7 +85,7 @@ export default async function HealthPage({ params }: { params: Promise<{ id: str
         ]}
       />
 
-      <div className="grid gap-5 lg:grid-cols-[1.2fr_1fr]">
+      <div className="grid items-start gap-5 lg:grid-cols-[1.2fr_1fr]">
         <Card>
           <CardHeader
             title="Findings by severity"

@@ -3,8 +3,6 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
-import { motion } from "framer-motion";
-import { useReducedMotionSafe } from "@/lib/use-reduced-motion";
 import {
   ArrowRight,
   ChevronDown,
@@ -24,7 +22,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Field, Input, Select } from "@/components/ui/field";
 import { apiClient, apiPost } from "@/lib/client-api";
-import { cn, formatNumber, relativeTime } from "@/lib/format";
+import { cn, formatNumber, languageColor, relativeTime } from "@/lib/format";
 import type {
   Integration,
   Job,
@@ -53,7 +51,6 @@ export function RepositoryBrowser({
   const [filter, setFilter] = useState<Filter>("all");
   const [workspaceFilter, setWorkspaceFilter] = useState(initialWorkspace ?? "all");
   const [showConnect, setShowConnect] = useState(repositories.length === 0);
-  const reduce = useReducedMotionSafe();
 
   const filtered = useMemo(() => {
     const needle = query.trim().toLowerCase();
@@ -79,11 +76,11 @@ export function RepositoryBrowser({
   };
 
   return (
-    <div className="space-y-5">
-      <Card className="shadow-card">
-        <div className="flex flex-col gap-4 px-5 py-3.5 sm:px-5 lg:flex-row lg:items-center lg:justify-between">
+    <div className="space-y-4">
+      <Card>
+        <div className="flex flex-col gap-3 px-3.5 py-2.5 lg:flex-row lg:items-center lg:justify-between">
           <div
-            className="flex flex-wrap items-center gap-1"
+            className="flex flex-wrap items-center gap-0.5"
             role="tablist"
             aria-label="Filter repositories"
           >
@@ -104,42 +101,36 @@ export function RepositoryBrowser({
                   aria-selected={active}
                   onClick={() => setFilter(value)}
                   className={cn(
-                    "relative rounded-lg px-3.5 py-2 text-[0.875rem] font-medium transition-colors duration-200",
-                    active ? "text-ink" : "text-muted hover:text-ink",
+                    "relative rounded-[5px] border px-2.5 py-1.5 text-[0.8125rem] font-medium transition-colors duration-150",
+                    active
+                      ? "border-line bg-raised text-ink"
+                      : "border-transparent text-muted hover:bg-raised/50 hover:text-ink",
                   )}
                 >
-                  {active ? (
-                    <motion.span
-                      layoutId={reduce ? undefined : "repo-filter-pill"}
-                      transition={{ type: "spring", stiffness: 480, damping: 42 }}
-                      className="absolute inset-0 rounded-lg border border-line bg-raised"
-                      aria-hidden="true"
-                    />
-                  ) : null}
                   <span className="relative">
-                    {label}{" "}
-                    <span className="ml-1 tabular text-[0.75rem] text-faint">{counts[value]}</span>
+                    {label}
+                    <span className="ml-1.5 tabular font-mono text-[0.75rem] text-faint">{counts[value]}</span>
                   </span>
                 </button>
               );
             })}
           </div>
-          <div className="flex flex-wrap items-center gap-2.5">
+          <div className="flex flex-wrap items-center gap-1.5">
             <label className="relative">
               <span className="sr-only">Search repositories</span>
-              <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-faint" />
+              <Search className="pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-faint" />
               <Input
                 value={query}
                 onChange={(event) => setQuery(event.target.value)}
                 placeholder="Search name or language"
-                className="h-10 w-56 pl-9 text-[0.875rem]"
+                className="h-8 w-52 pl-8 text-[0.8125rem]"
               />
             </label>
             <Select
               aria-label="Workspace"
               value={workspaceFilter}
               onChange={(event) => setWorkspaceFilter(event.target.value)}
-              className="h-10 w-auto min-w-44 text-[0.875rem]"
+              className="h-8 w-auto min-w-40 text-[0.8125rem]"
             >
               <option value="all">All workspaces</option>
               {workspaces.map((workspace) => (
@@ -149,7 +140,7 @@ export function RepositoryBrowser({
               ))}
             </Select>
             <Button type="button" size="sm" onClick={() => setShowConnect((value) => !value)}>
-              {showConnect ? <X className="h-4 w-4" /> : <Server className="h-4 w-4" />}
+              {showConnect ? <X className="h-3.5 w-3.5" /> : <Server className="h-3.5 w-3.5" />}
               {showConnect ? "Close" : "Connect repository"}
             </Button>
           </div>
@@ -166,57 +157,90 @@ export function RepositoryBrowser({
       ) : null}
 
       {filtered.length === 0 ? (
-        <Card className="px-6 py-16 text-center">
-          <FileCode2 className="mx-auto h-7 w-7 text-faint" aria-hidden="true" />
-          <h2 className="mt-4 font-display text-xl font-semibold text-ink">No repositories match</h2>
-          <p className="mx-auto mt-2 max-w-md text-[0.9375rem] leading-relaxed text-muted">
+        <Card className="px-6 py-12 text-center">
+          <FileCode2 className="mx-auto h-6 w-6 text-faint" aria-hidden="true" />
+          <h2 className="mt-3 font-display text-[1.125rem] font-semibold tracking-[-0.02em] text-ink">
+            No repositories match
+          </h2>
+          <p className="mx-auto mt-1.5 max-w-md text-[0.875rem] leading-relaxed text-muted">
             {repositories.length === 0
               ? "Connect the bundled demo dataset or a GitHub/GitLab repository to begin indexing."
               : "Clear the search or choose a different status filter."}
           </p>
           {repositories.length === 0 && workspaces[0] ? (
-            <div className="mt-6 flex justify-center">
+            <div className="mt-5 flex justify-center">
               <DemoConnectButton workspaceID={workspaces[0].id} />
             </div>
           ) : null}
         </Card>
       ) : (
         <Card className="overflow-hidden">
-          <ul className="divide-y divide-line">
+          <div
+            className="hidden grid-cols-[minmax(0,1fr)_10rem_8rem_9rem] gap-4 border-b border-line bg-shell/50 px-4 py-2 lg:grid"
+            aria-hidden="true"
+          >
+            <span className="meta-label">Repository</span>
+            <span className="meta-label">Workspace</span>
+            <span className="meta-label">Structure</span>
+            <span className="meta-label">State</span>
+          </div>
+          <ul className="divide-y divide-line/70">
             {filtered.map(({ repository, workspaceName }) => (
               <li key={repository.id}>
                 <Link
                   href={`/app/repositories/${repository.id}`}
-                  className="group grid gap-3 px-5 py-4 transition-colors duration-150 hover:bg-raised/30 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center"
+                  className="group grid gap-3 px-4 py-3 transition-colors duration-150 hover:bg-raised/40 lg:grid-cols-[minmax(0,1fr)_10rem_8rem_9rem] lg:items-center lg:gap-4"
                 >
                   <div className="min-w-0">
                     <div className="flex flex-wrap items-center gap-2">
-                      <span className="truncate font-mono text-[0.875rem] font-medium text-ink transition-colors group-hover:text-accent">
+                      <span className="truncate font-mono text-[0.8125rem] font-medium text-ink transition-colors group-hover:text-accent">
                         {repository.full_name}
                       </span>
-                      <StatusBadge status={repository.status} />
-                      {repository.is_demo ? <Badge tone="warning">demo dataset</Badge> : null}
+                      {repository.is_demo ? <Badge tone="warning">demo</Badge> : null}
                       {repository.visibility === "private" ? <Badge>private</Badge> : null}
                     </div>
-                    <p className="mt-1 line-clamp-1 text-[0.8125rem] leading-relaxed text-muted">
+                    <p className="mt-0.5 line-clamp-1 text-[0.75rem] leading-relaxed text-faint">
                       {repository.description || "No description supplied by the provider."}
                     </p>
-                    <p className="mt-1.5 text-[0.75rem] text-faint">
-                      {workspaceName} · {repository.language || "unknown"} ·{" "}
-                      {formatNumber(repository.file_count)} files ·{" "}
-                      {formatNumber(repository.symbol_count)} symbols · {repository.default_branch}
+                  </div>
+
+                  <div className="flex min-w-0 items-center gap-1.5 text-[0.8125rem] text-muted">
+                    <span
+                      aria-hidden="true"
+                      className="h-1.5 w-1.5 shrink-0 rounded-full"
+                      style={{ backgroundColor: languageColor(repository.language) }}
+                    />
+                    <span className="truncate">{workspaceName}</span>
+                    <span className="text-line-strong" aria-hidden="true">
+                      /
+                    </span>
+                    <span className="shrink-0 font-mono text-[0.75rem] text-faint">
+                      {repository.language || "unknown"}
+                    </span>
+                  </div>
+
+                  <div className="min-w-0 text-[0.75rem] text-muted">
+                    <p className="tabular truncate font-mono">
+                      {formatNumber(repository.file_count)} files
+                    </p>
+                    <p className="tabular mt-0.5 truncate font-mono text-faint">
+                      {formatNumber(repository.symbol_count)} symbols
                     </p>
                   </div>
-                  <div className="flex items-center justify-between gap-4 lg:justify-end">
-                    <span className="text-[0.75rem] text-faint">
-                      {repository.last_indexed_at
-                        ? `Indexed ${relativeTime(repository.last_indexed_at)}`
-                        : "Not indexed"}
-                    </span>
-                    <span className="inline-flex items-center gap-1.5 text-[0.8125rem] font-semibold text-accent transition-colors group-hover:text-ink">
-                      Open
-                      <ArrowRight className="arrow-slide h-3.5 w-3.5" aria-hidden="true" />
-                    </span>
+
+                  <div className="flex items-center justify-between gap-3 lg:justify-end">
+                    <div className="min-w-0 text-right">
+                      <StatusBadge status={repository.status} />
+                      <p className="mt-1 truncate text-[0.75rem] text-faint">
+                        {repository.last_indexed_at
+                          ? relativeTime(repository.last_indexed_at)
+                          : "Not indexed"}
+                      </p>
+                    </div>
+                    <ArrowRight
+                      className="arrow-slide h-3.5 w-3.5 shrink-0 text-faint transition-colors group-hover:text-accent"
+                      aria-hidden="true"
+                    />
                   </div>
                 </Link>
               </li>

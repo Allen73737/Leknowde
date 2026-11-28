@@ -142,7 +142,7 @@ export default function FeaturesPage() {
             aria-hidden="true"
             className="pointer-events-none absolute inset-0 grid-backdrop opacity-30 [mask-image:radial-gradient(ellipse_at_top_left,black,transparent_70%)]"
           />
-          <div className="container-wide relative py-16 sm:py-20 lg:py-24">
+          <div className="container-wide relative py-14 sm:py-16 lg:py-20">
             <div className="grid grid-cols-[minmax(0,1fr)] gap-12 lg:grid-cols-[minmax(0,1.3fr)_minmax(0,0.7fr)] lg:items-end lg:gap-20">
               <Reveal>
                 <div className="flex flex-wrap items-center gap-3">
@@ -258,7 +258,7 @@ export default function FeaturesPage() {
         ))}
 
         <section className="border-t border-line bg-shell">
-          <div className="container-wide py-20 sm:py-24 lg:py-28">
+          <div className="container-wide py-16 sm:py-20 lg:py-24">
             <Reveal>
               <div className="grid grid-cols-[minmax(0,1fr)] gap-12 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,0.6fr)] lg:items-end">
                 <div>

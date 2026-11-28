@@ -42,7 +42,7 @@ export default async function RepositoryOverviewPage({ params }: { params: Promi
   const fanIn = (dependencies.data?.summary.top_files ?? []).filter((file) => file.in_degree > 0).slice(0, 5);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5">
       <MetricBand
         items={[
           {
@@ -69,7 +69,7 @@ export default async function RepositoryOverviewPage({ params }: { params: Promi
         ]}
       />
 
-      <div className="grid items-stretch gap-5 lg:grid-cols-3">
+      <div className="grid items-start gap-5 lg:grid-cols-3">
         <Card className="flex flex-col">
           <CardHeader
             title="Composition"

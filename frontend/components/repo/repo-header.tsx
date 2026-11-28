@@ -24,12 +24,10 @@ import { formatNumber, plural, relativeTime } from "@/lib/format";
 import type { Job, RepoStats, Repository } from "@/lib/types";
 
 /**
- * RepoHeader — a flat identity band, not a card.
+ * RepoHeader — a compact identity band, not a card.
  *
- * The previous version stacked four badges, a description, a demo disclaimer
- * and a progress readout above the tabs, which pushed the actual page below
- * the fold. Here the band keeps: name, state, one meta line, two actions, a
- * live job strip only while it matters, then the section tabs.
+ * One line of identity, one line of facts, one live job strip only while it
+ * matters, then the section tabs. No decorative badges competing for weight.
  */
 export function RepoHeader({
   repository,
@@ -49,7 +47,6 @@ export function RepoHeader({
 
   const active = Boolean(job && ["queued", "running"].includes(job.status));
   const visibleJob = Boolean(job && (active || job.status === "failed"));
-  const showPanel = visibleJob || Boolean(error);
 
   useEffect(() => {
     if (!active || !job) return;
@@ -93,63 +90,86 @@ export function RepoHeader({
   }
 
   return (
-    <div className="space-y-4">
-      <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+    <div className="space-y-3.5">
+      <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
         <div className="min-w-0">
           <Link
             href="/app/repositories"
-            className="group inline-flex items-center gap-1.5 text-[0.75rem] text-faint transition-colors duration-200 hover:text-ink"
+            className="group inline-flex items-center gap-1.5 text-[0.75rem] text-faint transition-colors duration-150 hover:text-ink"
           >
             <ArrowLeft
-              className="h-3.5 w-3.5 transition-transform duration-200 group-hover:-translate-x-0.5"
+              className="h-3 w-3 transition-transform duration-150 group-hover:-translate-x-0.5"
               aria-hidden="true"
             />
-            All repositories
+            Repositories
+            <span className="text-line-strong">/</span>
+            <span className="font-mono text-[0.75rem] text-muted">{repository.owner}</span>
           </Link>
 
-          <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-2">
-            <h1 className="min-w-0 truncate font-display text-[1.75rem] font-semibold leading-tight tracking-[-0.035em] text-ink sm:text-[2rem]">
-              {repository.full_name}
-            </h1>
-            <StatusBadge status={repository.status} />
-            {repository.is_demo ? <Badge tone="warning">demo dataset</Badge> : null}
-          </div>
+          <div className="mt-2 flex items-start gap-3">
+            <span
+              aria-hidden="true"
+              className="mt-0.5 grid h-9 w-9 shrink-0 place-items-center rounded-[7px] border border-line bg-surface text-faint shadow-card"
+            >
+              <GitBranch className="h-4 w-4" />
+            </span>
+            <div className="min-w-0">
+              <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1.5">
+                <h1 className="min-w-0 truncate font-display text-[1.5rem] font-semibold leading-tight tracking-[-0.035em] text-ink sm:text-[1.75rem]">
+                  {repository.full_name}
+                </h1>
+                <StatusBadge status={repository.status} />
+                {repository.is_demo ? <Badge tone="warning">demo dataset</Badge> : null}
+                {repository.visibility === "private" ? <Badge>private</Badge> : null}
+              </div>
 
-          <div className="mt-2 flex flex-wrap items-center gap-x-3.5 gap-y-1 text-[0.8125rem] text-muted">
-            <span className="inline-flex items-center gap-1.5">
-              <GitBranch className="h-3.5 w-3.5 text-faint" aria-hidden="true" />
-              <span className="font-mono text-[0.75rem]">{repository.default_branch}</span>
-            </span>
-            <span aria-hidden="true" className="hidden h-3 w-px bg-line sm:block" />
-            <span className="tabular">{plural(stats.files, "file")}</span>
-            <span className="tabular">{plural(stats.symbols, "symbol")}</span>
-            <span className="tabular">{formatNumber(stats.edges)} edges</span>
-            <span aria-hidden="true" className="hidden h-3 w-px bg-line sm:block" />
-            <span className="text-[0.75rem] text-faint">
-              {repository.provider}
-              {repository.parser_mode ? ` · ${repository.parser_mode}` : ""}
-            </span>
-            <span className="text-faint">
-              {repository.last_indexed_at
-                ? `indexed ${relativeTime(repository.last_indexed_at)}`
-                : "never indexed"}
-            </span>
+              {repository.description ? (
+                <p className="mt-1 line-clamp-1 max-w-3xl text-[0.8125rem] leading-relaxed text-muted">
+                  {repository.description}
+                </p>
+              ) : null}
+
+              <div className="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1 text-[0.75rem] text-muted">
+                <span className="inline-flex items-center gap-1 rounded-[4px] border border-line bg-shell px-1.5 py-0.5 font-mono text-[0.75rem] leading-none text-ink">
+                  <GitBranch className="h-2.5 w-2.5 text-faint" aria-hidden="true" />
+                  {repository.default_branch}
+                </span>
+                <span className="tabular">{plural(stats.files, "file")}</span>
+                <span className="text-line-strong" aria-hidden="true">
+                  /
+                </span>
+                <span className="tabular">{plural(stats.symbols, "symbol")}</span>
+                <span className="text-line-strong" aria-hidden="true">
+                  /
+                </span>
+                <span className="tabular">{formatNumber(stats.edges)} edges</span>
+                <span className="text-line-strong" aria-hidden="true">
+                  /
+                </span>
+                <span className="font-mono text-[0.75rem] text-faint">
+                  {repository.provider}
+                  {repository.parser_mode ? ` · ${repository.parser_mode}` : ""}
+                </span>
+                <span className="text-faint">
+                  {repository.last_indexed_at
+                    ? `indexed ${relativeTime(repository.last_indexed_at)}`
+                    : "never indexed"}
+                </span>
+              </div>
+            </div>
           </div>
         </div>
 
-        <div className="flex shrink-0 flex-wrap items-center gap-2">
+        <div className="flex shrink-0 flex-wrap items-center gap-1.5">
           {repository.html_url ? (
             <a
               href={repository.html_url}
               target="_blank"
               rel="noreferrer noopener"
-              className="press group inline-flex h-9 items-center gap-1.5 rounded-lg border border-line px-3 text-[0.8125rem] font-medium text-muted transition-colors duration-200 hover:border-line-strong hover:text-ink"
+              className="press inline-flex h-8 items-center gap-1.5 rounded-[6px] border border-line px-2.5 text-[0.8125rem] font-medium text-muted transition-colors duration-150 hover:border-line-strong hover:text-ink"
             >
               Provider
-              <ArrowUpRight
-                className="h-3.5 w-3.5"
-                aria-hidden="true"
-              />
+              <ArrowUpRight className="h-3.5 w-3.5" aria-hidden="true" />
             </a>
           ) : null}
           <Button
@@ -160,29 +180,29 @@ export function RepoHeader({
             loading={busy}
             disabled={active || busy}
           >
-            <RefreshCw className={`h-4 w-4 ${active ? "animate-spin" : ""}`} aria-hidden="true" />
+            <RefreshCw className={`h-3.5 w-3.5 ${active ? "animate-spin" : ""}`} aria-hidden="true" />
             {active ? "Indexing…" : "Re-index"}
           </Button>
         </div>
       </div>
 
       <AnimatePresence initial={false}>
-        {showPanel ? (
+        {visibleJob || error ? (
           <motion.div
             key="job-strip"
             initial={reduce ? false : { opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={reduce ? { opacity: 0 } : { opacity: 0, height: 0 }}
-            transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ duration: 0.26, ease: [0.16, 1, 0.3, 1] }}
             className="overflow-hidden"
           >
-            <div className="rounded-lg border border-line bg-shell/60 px-4 py-3">
-              <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1.5">
+            <div className="rounded-[7px] border border-line bg-shell px-3 py-2.5">
+              <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1">
                 <span className="flex min-w-0 items-center gap-2 text-[0.8125rem]">
                   {active ? (
-                    <LogoLoader size={16} decorative />
+                    <LogoLoader size={14} decorative />
                   ) : (
-                    <AlertTriangle className="h-4 w-4 shrink-0 text-danger" aria-hidden="true" />
+                    <AlertTriangle className="h-3.5 w-3.5 shrink-0 text-danger" aria-hidden="true" />
                   )}
                   <span className="font-medium text-ink">Indexing</span>
                   <span className="truncate text-muted">
@@ -198,13 +218,13 @@ export function RepoHeader({
               {job ? (
                 <Progress
                   value={job.progress}
-                  className="mt-2.5"
+                  className="mt-2"
                   tone={job.status === "failed" ? "danger" : "accent"}
                   label="Indexing progress"
                 />
               ) : null}
               {job?.error || error ? (
-                <p className="mt-2 text-[0.8125rem] leading-relaxed text-danger">
+                <p className="mt-1.5 text-[0.8125rem] leading-relaxed text-danger">
                   {job?.error || error}
                 </p>
               ) : null}

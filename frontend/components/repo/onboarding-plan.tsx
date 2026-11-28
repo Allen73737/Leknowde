@@ -138,6 +138,27 @@ export function OnboardingPlan({
               </Card>
             );
           })}
+
+          <Card>
+            <CardHeader
+              title="Questions to ask the codebase"
+              description="Open a question in the assistant. Answers still depend on retrieved evidence."
+              icon={<HelpCircle className="h-4 w-4" aria-hidden="true" />}
+            />
+            <ul className="divide-y divide-line">
+              {plan.questions_to_ask_the_codebase.map((question) => (
+                <li key={question}>
+                  <Link
+                    href={`/app/repositories/${repositoryID}/assistant?q=${encodeURIComponent(question)}`}
+                    className="flex items-center justify-between gap-3 px-4 py-2.5 text-[0.8125rem] text-muted hover:bg-raised/40 hover:text-ink"
+                  >
+                    <span>{question}</span>
+                    <ArrowRight className="h-3 w-3 shrink-0 text-faint" aria-hidden="true" />
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </Card>
         </div>
 
         <div className="space-y-4">
@@ -193,62 +214,39 @@ export function OnboardingPlan({
         </div>
       </div>
 
-      <div className="grid grid-cols-[minmax(0,1fr)] gap-4 lg:grid-cols-[1fr_1fr]">
-        <Card>
-          <CardHeader
-            title="Questions to ask the codebase"
-            description="Open a question in the assistant. Answers still depend on retrieved evidence."
-            icon={<HelpCircle className="h-4 w-4" aria-hidden="true" />}
-          />
-          <ul className="divide-y divide-line">
-            {plan.questions_to_ask_the_codebase.map((question) => (
-              <li key={question}>
-                <Link
-                  href={`/app/repositories/${repositoryID}/assistant?q=${encodeURIComponent(question)}`}
-                  className="flex items-center justify-between gap-3 px-4 py-2.5 text-[0.8125rem] text-muted hover:bg-raised/40 hover:text-ink"
-                >
-                  <span>{question}</span>
-                  <ArrowRight className="h-3 w-3 shrink-0 text-faint" aria-hidden="true" />
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </Card>
-
-        <Card>
-          <CardHeader title="Indexed facts" description="Raw counts behind the plan." />
-          <div className="grid grid-cols-2 gap-3 px-4 py-4 text-[0.8125rem]">
-            <Fact label="Files" value={formatNumber(plan.facts.stats.files)} />
-            <Fact label="Symbols" value={formatNumber(plan.facts.stats.symbols)} />
-            <Fact label="Lines" value={formatNumber(plan.facts.stats.lines)} />
-            <Fact label="APIs" value={formatNumber(plan.facts.stats.apis)} />
-            <Fact label="Tests" value={formatNumber(plan.facts.stats.tests)} />
-            <Fact label="Modules" value={formatNumber(plan.facts.modules.length)} />
+      <Card>
+        <CardHeader title="Indexed facts" description="Raw counts behind the plan." />
+        <div className="grid grid-cols-2 gap-3 px-4 py-4 text-[0.8125rem] sm:grid-cols-3 lg:grid-cols-6">
+          <Fact label="Files" value={formatNumber(plan.facts.stats.files)} />
+          <Fact label="Symbols" value={formatNumber(plan.facts.stats.symbols)} />
+          <Fact label="Lines" value={formatNumber(plan.facts.stats.lines)} />
+          <Fact label="APIs" value={formatNumber(plan.facts.stats.apis)} />
+          <Fact label="Tests" value={formatNumber(plan.facts.stats.tests)} />
+          <Fact label="Modules" value={formatNumber(plan.facts.modules.length)} />
+        </div>
+        <div className="border-t border-line px-4 py-3">
+          <p className="text-[0.75rem] font-semibold uppercase tracking-[0.12em] text-faint">Entry points</p>
+          <div className="mt-1.5 flex flex-wrap gap-1">
+            {plan.facts.entry_points.length === 0 ? (
+              <span className="text-[0.75rem] text-faint">None detected.</span>
+            ) : (
+              plan.facts.entry_points.slice(0, 10).map((entry) => <Badge key={entry}>{entry}</Badge>)
+            )}
           </div>
-          <div className="border-t border-line px-4 py-3">
-            <p className="text-[0.75rem] font-semibold uppercase tracking-[0.12em] text-faint">Entry points</p>
-            <div className="mt-1.5 flex flex-wrap gap-1">
-              {plan.facts.entry_points.length === 0 ? (
-                <span className="text-[0.75rem] text-faint">None detected.</span>
-              ) : (
-                plan.facts.entry_points.slice(0, 10).map((entry) => <Badge key={entry}>{entry}</Badge>)
-              )}
-            </div>
+        </div>
+        <div className="border-t border-line px-4 py-3">
+          <p className="text-[0.75rem] font-semibold uppercase tracking-[0.12em] text-faint">Entities</p>
+          <div className="mt-1.5 flex flex-wrap gap-1">
+            {plan.facts.entities.length === 0 ? (
+              <span className="text-[0.75rem] text-faint">None detected.</span>
+            ) : (
+              plan.facts.entities.slice(0, 12).map((entity) => (
+                <Badge key={entity} tone="accent">{entity}</Badge>
+              ))
+            )}
           </div>
-          <div className="border-t border-line px-4 py-3">
-            <p className="text-[0.75rem] font-semibold uppercase tracking-[0.12em] text-faint">Entities</p>
-            <div className="mt-1.5 flex flex-wrap gap-1">
-              {plan.facts.entities.length === 0 ? (
-                <span className="text-[0.75rem] text-faint">None detected.</span>
-              ) : (
-                plan.facts.entities.slice(0, 12).map((entity) => (
-                  <Badge key={entity} tone="accent">{entity}</Badge>
-                ))
-              )}
-            </div>
-          </div>
-        </Card>
-      </div>
+        </div>
+      </Card>
     </div>
   );
 }

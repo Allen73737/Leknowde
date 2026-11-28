@@ -12,7 +12,7 @@ export default async function WorkspacesPage() {
 
   if (!result.data) {
     return (
-      <div className="space-y-6">
+      <div className="space-y-5">
         <SectionHeading title="Workspaces" />
         <ApiErrorNote error={result.error} retryHref="/app/workspaces" />
       </div>
@@ -35,10 +35,22 @@ export default async function WorkspacesPage() {
   );
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5">
       <SectionHeading
+        eyebrow="Access"
         title="Workspaces"
         description="A workspace is the access boundary for repositories, members, audit records and provider integrations."
+        meta={[
+          { label: "Workspaces", value: String(bundles.length).padStart(2, "0") },
+          {
+            label: "Repositories",
+            value: String(bundles.reduce((total, bundle) => total + bundle.repositories.length, 0)).padStart(2, "0"),
+          },
+          {
+            label: "Members",
+            value: String(bundles.reduce((total, bundle) => total + bundle.members.length, 0)).padStart(2, "0"),
+          },
+        ]}
       />
       <WorkspaceManager initial={bundles} />
     </div>

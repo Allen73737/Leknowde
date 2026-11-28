@@ -8,6 +8,7 @@ import { useReducedMotionSafe } from "@/lib/use-reduced-motion";
 import {
   Bell,
   ChevronRight,
+  ChevronsUpDown,
   Command,
   Menu,
   Plus,
@@ -22,7 +23,7 @@ import { CommandPalette } from "@/components/app/command-palette";
 import { UserMenu } from "@/components/app/user-menu";
 import { accountNav, primaryNav } from "@/lib/nav";
 import { cn, initials, plural } from "@/lib/format";
-import type { MeResponse, Workspace } from "@/lib/types";
+import type { MeResponse, MetaResponse, Workspace } from "@/lib/types";
 
 const crumbLabels: Record<string, string> = {
   app: "Dashboard",
@@ -45,21 +46,21 @@ function Breadcrumbs({ pathname }: { pathname: string }) {
   return (
     <nav
       aria-label="Breadcrumb"
-      className="hidden min-w-0 items-center gap-1 text-[0.8125rem] text-faint sm:flex"
+      className="hidden min-w-0 items-center gap-0.5 text-[0.8125rem] text-faint sm:flex"
     >
       {crumbs.map((crumb, index) => {
         const isLast = index === crumbs.length - 1;
         return (
-          <span key={crumb.href} className="flex min-w-0 items-center gap-1">
+          <span key={crumb.href} className="flex min-w-0 items-center gap-0.5">
             {index > 0 ? (
-              <ChevronRight className="h-3.5 w-3.5 shrink-0 text-line-strong" aria-hidden="true" />
+              <ChevronRight className="h-3 w-3 shrink-0 text-line-strong" aria-hidden="true" />
             ) : null}
             {isLast ? (
               <span className="truncate font-medium capitalize text-ink">{crumb.label}</span>
             ) : (
               <Link
                 href={crumb.href}
-                className="truncate capitalize transition-colors duration-200 hover:text-ink"
+                className="truncate capitalize transition-colors duration-150 hover:text-ink"
               >
                 {crumb.label}
               </Link>
@@ -92,43 +93,50 @@ function NavLink({
       href={href}
       aria-current={active ? "page" : undefined}
       className={cn(
-        "group relative flex items-center justify-between gap-2 rounded-lg px-3 py-2 text-[0.875rem] font-medium transition-colors duration-200",
-        active ? "text-ink" : "text-muted hover:text-ink",
+        "group relative flex items-center justify-between gap-2 rounded-[6px] border px-2.5 py-[7px] text-[0.8125rem] font-medium transition-colors duration-150",
+        active ? "text-ink" : "border-transparent text-muted hover:text-ink",
       )}
     >
       {active ? (
         <motion.span
           layoutId={reduce ? undefined : layoutId}
           transition={{ type: "spring", stiffness: 480, damping: 42 }}
-          className="absolute inset-0 rounded-lg border border-line bg-raised"
+          className="absolute inset-0 rounded-[6px] border border-line bg-raised"
           aria-hidden="true"
         >
-          <span className="absolute left-0 top-1/2 h-4 w-[2px] -translate-y-1/2 rounded-r-full bg-accent" />
+          <span className="absolute left-0 top-1/2 h-3.5 w-[2px] -translate-y-1/2 rounded-r-full bg-accent" />
         </motion.span>
       ) : (
         <span
           aria-hidden="true"
-          className="absolute inset-0 rounded-lg bg-raised/0 transition-colors duration-200 group-hover:bg-raised/60"
+          className="absolute inset-0 rounded-[6px] bg-raised/0 transition-colors duration-150 group-hover:bg-raised/55"
         />
       )}
       <span className="relative flex min-w-0 items-center gap-2.5">
         <Icon
           className={cn(
-            "h-4 w-4 shrink-0 transition-all duration-200",
-            active
-              ? "text-accent"
-              : "text-faint group-hover:translate-x-[1px] group-hover:text-muted",
+            "h-4 w-4 shrink-0 transition-colors duration-150",
+            active ? "text-accent" : "text-faint group-hover:text-muted",
           )}
           aria-hidden="true"
         />
         <span className="truncate">{label}</span>
       </span>
       {badge && badge > 0 ? (
-        <span className="relative shrink-0 rounded-md border border-accent/40 bg-accent/10 px-1.5 py-0.5 tabular text-[0.75rem] font-medium text-accent">
+        <span className="relative shrink-0 rounded-[4px] border border-accent/35 bg-accent/10 px-1.5 py-0.5 tabular text-[0.75rem] font-medium leading-none text-accent">
           {badge}
         </span>
       ) : null}
     </Link>
+  );
+}
+
+function NavGroupLabel({ children, aside }: { children: string; aside?: string }) {
+  return (
+    <div className="mb-1.5 flex items-baseline justify-between px-2.5">
+      <p className="meta-label">{children}</p>
+      {aside ? <span className="font-mono text-[0.75rem] text-faint">{aside}</span> : null}
+    </div>
   );
 }
 
@@ -137,6 +145,7 @@ function SidebarBody({
   workspaces,
   unread,
   pathname,
+  meta,
   onNavigate,
   onClose,
   onOpenPalette,
@@ -146,6 +155,7 @@ function SidebarBody({
   workspaces: Workspace[];
   unread: number;
   pathname: string;
+  meta?: MetaResponse | null;
   onNavigate?: () => void;
   onClose?: () => void;
   onOpenPalette: () => void;
@@ -167,53 +177,51 @@ function SidebarBody({
         ? plural(repositoryCount, "repository", "repositories")
         : `${plural(repositoryCount, "repository", "repositories")} · ${plural(workspaceCount, "workspace")}`;
   const orgLooksLikeEmail = org.includes("@");
+  const apiOnline = Boolean(meta);
+  const aiOnline = Boolean(meta?.ai_service?.status && meta.ai_service.status !== "unavailable");
 
   return (
     <div className="flex h-full flex-col border-r border-line bg-shell">
-      <div className="flex h-16 shrink-0 items-center justify-between border-b border-line px-4">
-        <Link
-          href="/app"
-          aria-label="LeKnowde dashboard"
-          className="focus-ring rounded-lg"
-        >
-          <Logo size={26} />
+      <div className="flex h-14 shrink-0 items-center justify-between border-b border-line px-4">
+        <Link href="/app" aria-label="LeKnowde dashboard" className="focus-ring rounded-[6px]">
+          <Logo size={24} />
         </Link>
         {onClose ? (
           <button
             type="button"
             onClick={onClose}
-            className="inline-flex h-9 w-9 items-center justify-center rounded-lg text-faint transition-colors hover:bg-raised hover:text-ink lg:hidden"
+            className="inline-flex h-8 w-8 items-center justify-center rounded-[6px] text-faint transition-colors hover:bg-raised hover:text-ink lg:hidden"
             aria-label="Close navigation"
           >
-            <X className="h-[1.125rem] w-[1.125rem]" />
+            <X className="h-4 w-4" />
           </button>
-        ) : null}
+        ) : (
+          <span className="chip">v1</span>
+        )}
       </div>
 
-      <div className="shrink-0 px-3 pt-3">
+      <div className="shrink-0 px-2.5 pt-2.5">
         <Link
           href="/app/workspaces"
           onClick={onNavigate}
           title={orgLooksLikeEmail ? workspaceLabel : org}
-          className="group flex items-center gap-3 rounded-xl border border-line bg-canvas px-3 py-2.5 transition-colors duration-200 hover:border-line-strong"
+          className="group flex items-center gap-2.5 rounded-[7px] border border-line bg-canvas px-2.5 py-2 transition-colors duration-150 hover:border-line-strong"
         >
-          <span className="grid h-8 w-8 shrink-0 place-items-center rounded-lg border border-line bg-raised text-[0.75rem] font-semibold text-accent">
+          <span className="grid h-7 w-7 shrink-0 place-items-center rounded-[5px] border border-line bg-raised text-[0.75rem] font-semibold text-accent">
             {initials(workspaceLabel)}
           </span>
           <span className="min-w-0 flex-1">
-            <span className="block truncate text-[0.875rem] font-medium leading-tight text-ink">
+            <span className="block truncate text-[0.8125rem] font-medium leading-tight text-ink">
               {workspaceLabel}
             </span>
-            <span className="mt-0.5 block truncate text-[0.75rem] text-faint">{workspaceMeta}</span>
+            <span className="mt-0.5 block truncate text-[0.75rem] leading-tight text-faint">{workspaceMeta}</span>
           </span>
-          <ChevronRight
-            className="h-3.5 w-3.5 shrink-0 text-faint transition-transform duration-200 group-hover:translate-x-0.5"
-            aria-hidden="true"
-          />
+          <ChevronsUpDown className="h-3.5 w-3.5 shrink-0 text-faint" aria-hidden="true" />
         </Link>
       </div>
 
-      <nav className="flex-1 overflow-y-auto px-2.5 pb-4 pt-2" aria-label="Main">
+      <nav className="flex-1 overflow-y-auto px-2 py-3" aria-label="Main">
+        <NavGroupLabel aside={String(workspaceCount).padStart(2, "0")}>Workspace</NavGroupLabel>
         <div className="space-y-0.5">
           {primaryNav.map((item) => {
             const active =
@@ -232,54 +240,50 @@ function SidebarBody({
           })}
         </div>
 
-        <div className="mt-6">
-          <div className="flex items-center justify-between px-3">
-            <p className="text-[0.75rem] font-medium text-faint">
-              Workspaces
-            </p>
+        <div className="mt-5">
+          <div className="mb-1.5 flex items-center justify-between px-2.5">
+            <p className="meta-label">Spaces</p>
             <Link
               href="/app/workspaces"
               onClick={onNavigate}
-              className="rounded-md p-1 text-faint transition-all duration-200 hover:bg-raised hover:text-ink"
+              className="rounded-[4px] p-0.5 text-faint transition-colors hover:bg-raised hover:text-ink"
               aria-label="Create or manage workspaces"
             >
               <Plus className="h-3.5 w-3.5" />
             </Link>
           </div>
-          <div className="mt-1.5 space-y-0.5">
+          <div className="space-y-0.5">
             {workspaces.slice(0, 4).map((workspace) => (
               <Link
                 key={workspace.id}
                 href={`/app/repositories?workspace=${workspace.id}`}
                 onClick={onNavigate}
-                className="group flex items-center justify-between gap-2 rounded-lg px-3 py-1.5 text-[0.8125rem] text-muted transition-colors duration-200 hover:bg-raised/60 hover:text-ink"
+                className="group flex items-center justify-between gap-2 rounded-[6px] px-2.5 py-[5px] text-[0.8125rem] text-muted transition-colors duration-150 hover:bg-raised/55 hover:text-ink"
               >
                 <span className="truncate">{workspace.name}</span>
-                <span className="shrink-0 tabular text-[0.75rem] text-faint">
+                <span className="shrink-0 tabular font-mono text-[0.75rem] text-faint">
                   {workspace.repository_count}
                 </span>
               </Link>
             ))}
             {workspaces.length === 0 ? (
-              <p className="px-3 py-1.5 text-[0.8125rem] text-faint">No workspaces yet.</p>
+              <p className="px-2.5 py-1 text-[0.8125rem] text-faint">No workspaces yet.</p>
             ) : (
               <Link
                 href="/app/workspaces"
                 onClick={onNavigate}
-                className="flex items-center justify-between gap-2 rounded-lg px-3 py-1.5 text-[0.8125rem] text-faint transition-colors duration-200 hover:bg-raised/60 hover:text-ink"
+                className="flex items-center justify-between gap-2 rounded-[6px] px-2.5 py-[5px] text-[0.75rem] text-faint transition-colors duration-150 hover:bg-raised/55 hover:text-ink"
               >
                 Manage workspaces
-                <ChevronRight className="h-3.5 w-3.5" aria-hidden="true" />
+                <ChevronRight className="h-3 w-3" aria-hidden="true" />
               </Link>
             )}
           </div>
         </div>
 
         <div className="mt-5 border-t border-line pt-4">
-          <p className="px-3 text-[0.75rem] font-medium text-faint">
-            Account
-          </p>
-          <div className="mt-1.5 space-y-0.5">
+          <NavGroupLabel>Account</NavGroupLabel>
+          <div className="space-y-0.5">
             {accountNav.map((item) => {
               const active = pathname.startsWith(item.href);
               return (
@@ -299,20 +303,32 @@ function SidebarBody({
         </div>
       </nav>
 
-      <div className="shrink-0 border-t border-line p-2.5">
+      <div className="shrink-0 space-y-2 border-t border-line p-2.5">
         <button
           type="button"
           onClick={onOpenPalette}
-          className="group flex w-full items-center gap-2.5 rounded-lg border border-line bg-canvas px-3 py-2 text-left transition-all duration-200 hover:border-line-strong"
+          className="group flex w-full items-center gap-2 rounded-[6px] border border-line bg-canvas px-2.5 py-1.5 text-left transition-colors duration-150 hover:border-line-strong"
         >
-          <Command className="h-4 w-4 shrink-0 text-faint transition-colors group-hover:text-accent" aria-hidden="true" />
-          <span className="min-w-0 flex-1 truncate text-[0.8125rem] text-muted">
-            Search everything
-          </span>
-          <span className="shrink-0 rounded border border-line bg-shell px-1.5 py-0.5 font-mono text-[0.75rem] text-faint">
-            ⌘K
-          </span>
+          <Command className="h-3.5 w-3.5 shrink-0 text-faint transition-colors group-hover:text-accent" aria-hidden="true" />
+          <span className="min-w-0 flex-1 truncate text-[0.75rem] text-muted">Search everything</span>
+          <span className="kbd">⌘K</span>
         </button>
+        <div className="flex items-center justify-between px-1 font-mono text-[0.75rem] text-faint">
+          <span className="inline-flex items-center gap-1.5">
+            <span
+              aria-hidden="true"
+              className={cn("h-1.5 w-1.5 rounded-full", apiOnline ? "bg-success" : "bg-danger")}
+            />
+            API
+          </span>
+          <span className="inline-flex items-center gap-1.5">
+            <span
+              aria-hidden="true"
+              className={cn("h-1.5 w-1.5 rounded-full", aiOnline ? "bg-success" : "bg-warning")}
+            />
+            {aiOnline ? "AI linked" : "AI offline"}
+          </span>
+        </div>
       </div>
     </div>
   );
@@ -322,11 +338,13 @@ export function AppShell({
   me,
   workspaces,
   unread,
+  meta,
   children,
 }: {
   me: MeResponse;
   workspaces: Workspace[];
   unread: number;
+  meta?: MetaResponse | null;
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
@@ -369,12 +387,13 @@ export function AppShell({
   return (
     <div className="min-h-screen bg-canvas">
       <CommandPalette workspaces={workspaces} open={paletteOpen} onOpenChange={setPaletteOpen} />
-      <aside className="fixed inset-y-0 left-0 z-40 hidden w-64 lg:block xl:w-72">
+      <aside className="fixed inset-y-0 left-0 z-40 hidden w-[15.5rem] lg:block xl:w-[16.5rem]">
         <SidebarBody
           me={me}
           workspaces={workspaces}
           unread={unread}
           pathname={pathname}
+          meta={meta}
           onOpenPalette={() => setPaletteOpen(true)}
           layoutPrefix="desktop"
         />
@@ -384,16 +403,16 @@ export function AppShell({
         {mobileOpen ? (
           <div className="fixed inset-0 z-50 lg:hidden">
             <motion.div
-              className="absolute inset-0 bg-black/55"
+              className="absolute inset-0 bg-black/60"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              transition={{ duration: 0.22 }}
+              transition={{ duration: 0.2 }}
               onClick={() => setMobileOpen(false)}
               aria-hidden="true"
             />
             <motion.aside
-              className="absolute inset-y-0 left-0 w-[17.5rem]"
+              className="absolute inset-y-0 left-0 w-[16.5rem]"
               initial={reduce ? { opacity: 1 } : { x: "-100%" }}
               animate={reduce ? { opacity: 1 } : { x: 0 }}
               exit={reduce ? { opacity: 0 } : { x: "-100%" }}
@@ -406,6 +425,7 @@ export function AppShell({
                 workspaces={workspaces}
                 unread={unread}
                 pathname={pathname}
+                meta={meta}
                 onNavigate={() => setMobileOpen(false)}
                 onClose={() => setMobileOpen(false)}
                 onOpenPalette={() => {
@@ -419,52 +439,67 @@ export function AppShell({
         ) : null}
       </AnimatePresence>
 
-      <div className="lg:pl-64 xl:pl-72">
+      <div className="lg:pl-[15.5rem] xl:pl-[16.5rem]">
         <header
           className={cn(
-            "sticky top-0 z-30 border-b bg-canvas transition-shadow duration-300",
-            scrolled ? "border-line shadow-[0_10px_30px_-24px_rgba(0,0,0,0.55)]" : "border-line/70",
+            "sticky top-0 z-30 border-b bg-canvas transition-colors duration-200",
+            scrolled ? "border-line" : "border-line/70",
           )}
         >
-          <div className="flex h-16 items-center justify-between gap-3 px-5 sm:px-7 xl:px-10">
-            <div className="flex min-w-0 items-center gap-2.5">
+          <div className="mx-auto flex h-14 w-full max-w-[112rem] items-center gap-3 px-4 sm:px-6 lg:px-8">
+            <div className="flex min-w-0 items-center gap-2">
               <button
                 type="button"
                 onClick={() => setMobileOpen(true)}
                 aria-label="Open navigation"
-                className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-line text-muted transition-colors duration-200 hover:border-line-strong hover:text-ink lg:hidden"
+                className="inline-flex h-8 w-8 items-center justify-center rounded-[6px] border border-line text-muted transition-colors duration-150 hover:border-line-strong hover:text-ink lg:hidden"
               >
-                <Menu className="h-[1.125rem] w-[1.125rem]" />
+                <Menu className="h-4 w-4" />
               </button>
               <Breadcrumbs pathname={pathname} />
             </div>
-            <div className="flex items-center gap-1.5">
+
+            <div className="hidden flex-1 justify-center md:flex">
+              <button
+                type="button"
+                onClick={() => setPaletteOpen(true)}
+                className="group flex h-8 w-full max-w-md items-center gap-2 rounded-[6px] border border-line bg-shell px-2.5 text-left transition-colors duration-150 hover:border-line-strong"
+              >
+                <Search className="h-3.5 w-3.5 shrink-0 text-faint" aria-hidden="true" />
+                <span className="min-w-0 flex-1 truncate text-[0.8125rem] text-faint">
+                  Search repositories, files, symbols
+                </span>
+                <span className="kbd">⌘K</span>
+              </button>
+            </div>
+
+            <div className="ml-auto flex items-center gap-0.5">
               <button
                 type="button"
                 onClick={() => setPaletteOpen(true)}
                 aria-label="Search"
-                className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-line text-muted transition-colors duration-200 hover:border-line-strong hover:text-ink lg:hidden"
+                className="inline-flex h-8 w-8 items-center justify-center rounded-[6px] text-muted transition-colors duration-150 hover:bg-raised hover:text-ink md:hidden"
               >
-                <Search className="h-[1.125rem] w-[1.125rem]" />
+                <Search className="h-4 w-4" />
               </button>
               <Link
                 href="/app/notifications"
                 aria-label={`Notifications${unread ? `, ${unread} unread` : ""}`}
-                className="relative inline-flex h-9 w-9 items-center justify-center rounded-lg text-muted transition-colors duration-200 hover:bg-raised hover:text-ink"
+                className="relative inline-flex h-8 w-8 items-center justify-center rounded-[6px] text-muted transition-colors duration-150 hover:bg-raised hover:text-ink"
               >
-                <Bell className="h-[1.125rem] w-[1.125rem]" />
+                <Bell className="h-4 w-4" />
                 {unread > 0 ? (
-                  <span className="absolute right-2 top-2 h-1.5 w-1.5 rounded-full bg-accent ring-2 ring-canvas" />
+                  <span className="absolute right-1.5 top-1.5 h-1.5 w-1.5 rounded-full bg-accent ring-2 ring-canvas" />
                 ) : null}
               </Link>
               <ThemeToggle />
-              <div className="mx-1 hidden h-6 w-px bg-line sm:block" aria-hidden="true" />
+              <div className="mx-1 hidden h-5 w-px bg-line sm:block" aria-hidden="true" />
               <UserMenu name={me.user.name} email={me.user.email} />
             </div>
           </div>
         </header>
 
-        <main id="main" className="w-full px-5 py-7 sm:px-7 lg:py-9 xl:px-10">
+        <main id="main" className="mx-auto w-full max-w-[112rem] px-4 py-5 sm:px-6 lg:px-8 lg:py-7">
           {children}
         </main>
       </div>

@@ -13,7 +13,7 @@ export default async function AuditPage() {
 
   if (!result.data) {
     return (
-      <div className="space-y-6">
+      <div className="space-y-5">
         <SectionHeading title="Audit log" />
         <ApiErrorNote error={result.error} retryHref="/app/audit" />
       </div>
@@ -26,10 +26,16 @@ export default async function AuditPage() {
   const workspaceEvents = logs.filter((log) => log.action.startsWith("workspace.")).length;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5">
       <SectionHeading
+        eyebrow="Governance"
         title="Audit log"
         description="Server-recorded actions for this organization. Each row names the actor, the target, the client IP and the request time. This is an operational log, not a signed or tamper-evident ledger."
+        meta={[
+          { label: "Events", value: String(logs.length).padStart(3, "0") },
+          { label: "Actors", value: String(actors.size).padStart(2, "0") },
+          { label: "Integration events", value: String(integrationEvents).padStart(2, "0") },
+        ]}
         action={<ShieldCheck className="h-4 w-4 text-faint" aria-hidden="true" />}
       />
 

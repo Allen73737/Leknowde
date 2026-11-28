@@ -24,8 +24,9 @@ export default async function ArchitecturePage({ params }: { params: Promise<{ i
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5">
       <SectionHeading
+        eyebrow="Structure"
         title="Architecture"
         description="A graph of modules, services, APIs and entities. Switch projections without losing the repository context. Node placement is deterministic; it is not a force-directed guess."
       />

@@ -49,8 +49,9 @@ export default async function TwinPage({ params }: { params: Promise<{ id: strin
   const repository = twin.repository;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5">
       <SectionHeading
+        eyebrow="Understand"
         title="Digital twin"
         description="A queryable, static projection of the repository graph. It models structure and declared relationships only; it is not a running simulation and it carries no runtime telemetry."
         action={<Badge>{repository.parser || "parser unknown"}</Badge>}
@@ -109,7 +110,7 @@ export default async function TwinPage({ params }: { params: Promise<{ id: strin
         </div>
       </Card>
 
-      <div className="grid grid-cols-[minmax(0,1fr)] gap-5 lg:grid-cols-[1.3fr_1fr]">
+      <div className="grid grid-cols-[minmax(0,1fr)] items-start gap-5 lg:grid-cols-[1.3fr_1fr]">
         <Card>
           <CardHeader
             title="Node kinds"
